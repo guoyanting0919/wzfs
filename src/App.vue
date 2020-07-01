@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <loading :active.sync="isLoading"></loading>test
+    <loading :active.sync="isLoading"></loading>
     <router-view />
   </div>
 </template>

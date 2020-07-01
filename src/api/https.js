@@ -1,7 +1,7 @@
 import axios from "axios";
 import router from "../router/index";
 import store from "../store/index";
-import { toLogin, to404Page } from "./utils";
+import { toCalendar, to404Page } from "./utils";
 
 // 錯誤捕捉
 const errorHandle = (status, msg) => {
@@ -11,7 +11,7 @@ const errorHandle = (status, msg) => {
       break;
 
     case 401:
-      toLogin();
+      toCalendar();
       break;
 
     case 403:
@@ -34,13 +34,13 @@ const errorHandle = (status, msg) => {
 
 // 設定 baseURL
 let instance = axios.create({
-  baseURL: "http://tccdonkeyapi.1966.org.tw/api/",
+  baseURL: "https://scan.1966.org.tw/api/",
 });
 
 // request 攔截
 instance.interceptors.request.use(
   (config) => {
-    const token = store.state.token;
+    const token = window.localStorage.Token;
     token && (config.headers.Authorization = `Bearer ${token}`);
     return config;
   },

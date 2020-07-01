@@ -1,0 +1,42 @@
+#Header {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  //   background-color: #dfdfdf;
+  //   box-shadow: 0px 2px 10px rgb(214, 214, 214);
+
+  .headerContainer {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    // max-width: 1440px;
+  }
+
+  .btnBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .userName {
+    margin-left: 0.5rem;
+  }
+
+  .loginDialog {
+    border-radius: 10px;
+  }
+
+  .loginBox {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .loginInput {
+    width: 250px;
+    margin-left: 1rem;
+  }
+}

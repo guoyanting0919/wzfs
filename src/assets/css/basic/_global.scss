@@ -1,0 +1,41 @@
+button {
+  font-family: "PingFang TC", "LiHei Pro", "Microsoft JhengHei", "微軟正黑體",
+    "Segoe UI Semibold", "Segoe UI", "Lucida Grande", Verdana, Helvetica, Arial,
+    sans-serif;
+}
+
+.el-button--primary,
+.el-button--primary:focus {
+  color: #fff;
+  background-color: $colorPrimary;
+  border-color: $colorPrimary;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: lighten($color: $colorPrimary, $amount: 12);
+    border-color: lighten($color: $colorPrimary, $amount: 12);
+  }
+}
+
+.el-button--info,
+.el-button--info:focus {
+  color: rgb(124, 124, 124);
+  background-color: #fff;
+  border-color: rgb(124, 124, 124);
+  transition: 0.3s;
+
+  &:hover {
+    background-color: $colorInfo;
+    border-color: $colorInfo;
+    background-color: rgb(82, 82, 82);
+  }
+}
+
+.el-input.is-active .el-input__inner,
+.el-input__inner:focus {
+  border-color: $colorPrimary;
+}
+
+.el-notification__closeBtn {
+  display: none;
+}

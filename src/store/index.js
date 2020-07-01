@@ -6,6 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     token: "",
+    tokenExpire: "",
     isLoading: false,
   },
   actions: {
@@ -17,6 +18,14 @@ export default new Vuex.Store({
   mutations: {
     LOADING(state, payload) {
       state.isLoading = payload;
+    },
+    SAVE_TOKEN(state, data) {
+      state.token = data;
+      window.localStorage.setItem("Token", data);
+    },
+    SAVE_TOKEN_EXPIRE(state, data) {
+      state.tokenExpire = data;
+      window.localStorage.setItem("TokenExpire", data);
     },
   },
 
