@@ -1,17 +1,54 @@
 #Calendar {
   .filterBox {
+    background-color: lighten($color: $colorPrimary, $amount: 68);
+    padding: 0px 2rem;
+    box-sizing: border-box;
     width: 90%;
     margin: auto;
     margin-top: 2rem;
     display: flex;
     align-items: center;
-    height: 60px;
+    height: 80px;
+    border-radius: 8px;
+
+    @include rwd($lg) {
+      height: calc(100vh - 100px);
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      margin-top: 100px;
+      width: 375px;
+      align-items: flex-start;
+      flex-direction: column;
+      box-shadow: 5px 5px 5px #888888;
+      transition: 0.3s;
+      transform: translateX(-390px);
+    }
+
+    &.showMenu {
+      transform: translateX(0);
+    }
+
+    label {
+      @include rwd($lg) {
+        margin: 0.75rem;
+        width: 200px;
+      }
+    }
   }
 
   .searchInput {
     margin-left: auto;
     width: 200px;
     color: $colorPrimary;
+
+    @include rwd($lg) {
+      margin-left: 0;
+      margin: 0.75rem;
+      width: 250px;
+      order: -1;
+      margin-top: 1rem;
+    }
   }
 
   .el-input__icon {
@@ -39,6 +76,11 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+
+    @include rwd($lg) {
+      justify-content: flex-start;
+      font-size: 14px;
+    }
 
     &.activeSelect {
       background: $colorPrimary;
@@ -120,6 +162,10 @@
     white-space: nowrap;
   }
 
+  .el-divider--horizontal {
+    margin: 16px 0;
+  }
+
   .dialogBox {
     display: flex;
     align-items: center;
@@ -150,6 +196,10 @@
     }
   }
 
+  .noInfo {
+    color: rgb(182, 0, 0);
+  }
+
   .joinUserBox {
     margin-top: 1rem;
   }
@@ -158,7 +208,7 @@
 #fullCalendar {
   height: 90vh;
   width: 90%;
-  margin: 3rem auto;
+  margin: 1rem auto 3rem auto;
 
   .fc-event,
   .fc-event-dot {
@@ -182,5 +232,52 @@
 
   .fc-time-grid-event .fc-content {
     display: block;
+  }
+
+  .fc-button-primary {
+    color: #fff;
+    background-color: $colorSecondary;
+    border-color: $colorSecondary;
+    transition: 0.3s;
+
+    @include rwd($sm) {
+      padding: 4px;
+      font-size: 12px;
+    }
+
+    &.fc-dayGridMonth-button,
+    &.fc-timeGridWeek-button,
+    &.fc-timeGridDay-button {
+      background-color: #e5e5e5;
+      border-color: #cccccc;
+      color: #666666;
+
+      &.fc-button-active {
+        color: #fff;
+        background-color: $colorSecondary;
+        border-color: $colorSecondary;
+      }
+
+      &:hover {
+        color: #fff;
+        background-color: $colorSecondary;
+        border-color: $colorSecondary;
+      }
+    }
+
+    &:hover {
+      background-color: darken($color: $colorSecondary, $amount: 3);
+      border-color: darken($color: $colorSecondary, $amount: 3);
+    }
+
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  .fc-toolbar h2 {
+    @include rwd($sm) {
+      font-size: 14px;
+    }
   }
 }

@@ -11,6 +11,9 @@ const api = {
   GetInfoByToken(params) {
     return req("get", "Login/GetInfoByToken", params);
   },
+  CheckTokenExpire(params) {
+    return req("get", "Login/GetExpireByToken", params);
+  },
 
   // event type
   GetEventType() {
@@ -21,8 +24,16 @@ const api = {
   GetEvents(params) {
     return req("get", "Client/GetEventList", params);
   },
+  GetEventsPage(params) {
+    return req("get", "CalendarEvent/Get", params);
+  },
   GetEventById(params) {
     return req("get", "Client/GetEventById/Id", params);
+  },
+
+  //unit
+  GetUnits() {
+    return req("get", "School/GetUnitList");
   },
 };
 

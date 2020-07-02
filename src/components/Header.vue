@@ -1,11 +1,16 @@
 <template>
   <div id="Header">
     <div class="headerContainer">
+      <i @click="setShowMenu" class="fas fa-bars"></i>
       <img @click="$router.push('/Calendar')" src="../assets/images/wzlogo.png" alt />
       <div class="btnBox">
-        <el-button v-if="!userName" @click="loginDialog=true" size="mini" type="primary">登入</el-button>
-        <el-button v-if="userName" @click="logoutHandler" size="mini" type="primary">登出</el-button>
-        <p class="userName" v-if="userName">{{userName}}</p>
+        <!-- <el-button v-if="!userName" @click="loginDialog=true" size="mini" type="info">登入</el-button>
+        <el-button v-if="userName" @click="logoutHandler" size="mini" type="info">登出</el-button>
+        <p class="userName" v-if="userName">{{userName}}</p>-->
+        <i :class="{'loginIcon':userName}" class="fas fa-user"></i>
+        <p v-if="!userName" class="loginBox" @click="loginDialog=true">登入帳號</p>
+        <p v-if="userName" class="userName">{{userName}}</p>
+        <p @click="logoutHandler" class="logoutBox" v-if="userName">登出</p>
       </div>
     </div>
 
@@ -46,7 +51,8 @@ export default {
     return {
       loginDialog: false,
       account: "admin",
-      password: "0000000"
+      password: "0000000",
+      showMenu: false
     };
   },
   computed: {
@@ -92,13 +98,23 @@ export default {
     },
     logoutHandler() {
       const vm = this;
-      window.localStorage.removeItem("user");
-      window.localStorage.removeItem("Token");
-      window.localStorage.removeItem("TokenExpire");
-      window.localStorage.removeItem("refreshtime");
-      window.localStorage.removeItem("router");
-      vm.$router.push("/Calendar");
-      window.location.reload();
+      vm.$confirm(`確認登出?`, "提示", {
+        confirmButtonText: "確定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        window.localStorage.removeItem("user");
+        window.localStorage.removeItem("Token");
+        window.localStorage.removeItem("TokenExpire");
+        window.localStorage.removeItem("refreshtime");
+        window.localStorage.removeItem("router");
+        vm.$router.push("/Calendar");
+        window.location.reload();
+      });
+    },
+    setShowMenu() {
+      this.showMenu = !this.showMenu;
+      this.$emit("getShowMenu", this.showMenu);
     }
   }
 };

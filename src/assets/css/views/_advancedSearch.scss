@@ -1,0 +1,173 @@
+#AdvancedSearch {
+  .filterBox {
+    background-color: lighten($color: $colorPrimary, $amount: 68);
+    padding: 0px 2rem;
+    box-sizing: border-box;
+    width: 90%;
+    margin: auto;
+    margin-top: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 80px;
+    border-radius: 8px;
+  }
+
+  .keywordInput,
+  .dateSelect,
+  .unitSelect {
+    width: 300px;
+  }
+
+  .mainTable {
+    width: 90%;
+    margin: auto;
+    height: 300px;
+  }
+
+  .textOverflow {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .userSpan {
+    margin-right: 0.5rem;
+  }
+
+  .el-dialog__body {
+    padding-top: 0;
+  }
+
+  .eventTitle,
+  .typeName,
+  .eventUnitCode {
+    margin-right: 1rem;
+  }
+
+  .eventDailog {
+    border-radius: 10px;
+    width: 700px;
+  }
+
+  .eventTitle {
+    font-size: 18px;
+    font-weight: 700;
+    color: darken($color: $colorPrimary, $amount: 10);
+  }
+
+  .typeName {
+    background-color: lighten($color: $colorPrimary, $amount: 65);
+    display: inline-block;
+    height: 32px;
+    padding: 0 10px;
+    line-height: 30px;
+    font-size: 12px;
+    color: $colorPrimary;
+    border: 1px solid lighten($color: $colorPrimary, $amount: 65);
+    border-radius: 4px;
+    box-sizing: border-box;
+    white-space: nowrap;
+  }
+
+  .eventUnitCode {
+    background-color: lighten($color: $colorPrimary, $amount: 65);
+    display: inline-block;
+    height: 32px;
+    padding: 0 10px;
+    line-height: 30px;
+    font-size: 12px;
+    color: $colorPrimary;
+    border: 1px solid lighten($color: $colorPrimary, $amount: 65);
+    border-radius: 4px;
+    box-sizing: border-box;
+    white-space: nowrap;
+  }
+
+  .el-divider--horizontal {
+    margin: 16px 0;
+  }
+
+  .dialogBox {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .boxTitle {
+    font-weight: 700;
+    width: 80px;
+    font-size: 16px;
+    align-self: flex-start;
+  }
+
+  .summaryBox {
+    width: 500px;
+  }
+
+  .eventLink {
+    color: lighten($color: $colorPrimary, $amount: 30);
+    margin-right: 1rem;
+
+    &:hover {
+      color: lighten($color: $colorPrimary, $amount: 10);
+    }
+
+    i {
+      margin-right: 0.25rem;
+    }
+  }
+
+  .noInfo {
+    color: rgb(182, 0, 0);
+  }
+
+  .joinUserBox {
+    margin-top: 1rem;
+  }
+
+  #Pagination {
+    margin: 2rem 2rem;
+    text-align: right;
+    // position: absolute;
+    // bottom: 0;
+    // right: 1rem;
+
+    .el-pagination.is-background .el-pager li:not(.disabled).active {
+      background-color: $colorPrimary;
+    }
+  }
+
+  .el-table th > .cell {
+    color: $colorPrimary;
+  }
+
+  .el-table .descending .sort-caret.descending {
+    border-top-color: lighten($color: $colorPrimary, $amount: 20);
+  }
+
+  .el-table .ascending .sort-caret.ascending {
+    border-bottom-color: lighten($color: $colorPrimary, $amount: 20);
+  }
+}
+
+::-webkit-scrollbar {
+  //整停sb寬度
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  //軌道樣式
+  background-color: lighten($color: $colorPrimary, $amount: 50);
+  margin-top: 10px;
+}
+::-webkit-scrollbar-thumb {
+  //sb樣式
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+  background: $colorPrimary;
+}
+
+.el-tooltip__popper .userSpan {
+  margin-right: 0.5rem;
+}

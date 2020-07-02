@@ -40,7 +40,7 @@ let instance = axios.create({
 // request 攔截
 instance.interceptors.request.use(
   (config) => {
-    const token = window.localStorage.Token;
+    const token = store.state.token;
     token && (config.headers.Authorization = `Bearer ${token}`);
     return config;
   },

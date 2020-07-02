@@ -32,7 +32,11 @@ button {
 }
 
 .el-input.is-active .el-input__inner,
-.el-input__inner:focus {
+.el-input__inner:focus,
+.el-select .el-input.is-focus .el-input__inner,
+.el-select .el-input__inner:focus,
+.el-range-editor.is-active,
+.el-range-editor.is-active:hover {
   border-color: $colorPrimary;
 }
 

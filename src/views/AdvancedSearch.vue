@@ -1,61 +1,110 @@
 <template>
-  <div id="Calendar">
-    <Header @getShowMenu="getShowMenu"></Header>
-    <div class="filterBox" :class="{'showMenu':showMenu}">
-      <template v-for="item in eventTypeData">
-        <label :for="item.Id" :key="item.Id">
-          <input
-            class="typeCheckBox"
-            :value="item.EventTypeName"
-            v-model="typeCheckBox"
-            type="checkbox"
-            :id="item.Id"
-          />
-          <span :class="{ activeSelect: checkIncludes(item.EventTypeName) }" class="checkedType">
-            {{ item.EventTypeName }}
-            <i class="fas fa-times-circle cross"></i>
-          </span>
-        </label>
-      </template>
+  <div id="AdvancedSearch">
+    <Header></Header>
+
+    <!-- fillterBox -->
+    <div class="filterBox">
       <el-input
-        @keydown.native.enter="searchHandler"
-        class="searchInput"
+        @keyup.native.enter="searchHandler"
+        class="keywordInput"
         placeholder="請輸入關鍵字"
-        v-model="searchInput"
+        v-model="keywordInput"
+      ></el-input>
+
+      <el-select
+        no-data-text="無匹配資料"
+        no-match-text="無匹配資料"
+        class="unitSelect"
+        filterable
+        v-model="unitSelect"
+        placeholder="請選擇單位"
+        :clearable="true"
       >
-        <i @click="searchHandler" slot="suffix" class="el-input__icon el-icon-search"></i>
-      </el-input>
-      <el-button
-        @click="$router.push('/AdvancedSearch')"
-        type="primary"
-        class="adSearch"
-        v-if="isLogin"
-      >進階搜尋</el-button>
+        <el-option
+          v-for="unit in unitsData"
+          :key="unit.UntId"
+          :value="unit.UntId"
+          :label="unit.UntNameFull"
+        ></el-option>
+      </el-select>
+
+      <el-date-picker
+        class="dateSelect"
+        v-model="dateSelect"
+        type="daterange"
+        range-separator="~"
+        start-placeholder="開始日期"
+        end-placeholder="结束日期"
+      ></el-date-picker>
+
+      <el-button :loading="searchLoading" @click="searchHandler" type="primary">搜尋</el-button>
     </div>
 
-    <!-- calendar -->
-    <div id="fullCalendar">
-      <FullCalendar
-        v-if="eventData"
-        class="wzCalendar"
-        defaultView="dayGridMonth"
-        :plugins="calendarPlugins"
-        :weekends="true"
-        :events="eventFilter"
-        :eventLimit="true"
-        height="parent"
-        :allDaySlot="false"
-        :displayEventEnd="true"
-        @eventRender="this.eventRender"
-        @datesRender="this.datesRender"
-        ref="fullCalendar"
-        :allDayDefault="false"
-        :header="{
-          left: 'prev,next today',
-          center: 'title',
-          right: 'dayGridMonth,timeGridWeek,timeGridDay',
-        }"
-      />
+    <!-- mainTable -->
+    <el-table
+      :default-sort="{prop: 'date', order: 'descending'}"
+      v-if="eventsData"
+      :data="eventsData"
+      height="650"
+      border
+      empty-text="暫無資料"
+      class="mainTable"
+    >
+      <el-table-column prop="UnitCode" label="單位" width="250">
+        <template slot-scope="scope">
+          <span v-if="unitsData">{{unitNameFilter(scope.row.UnitCode)}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="EventName" label="活動 / 會議名稱" width="250"></el-table-column>
+      <el-table-column prop="JoinUsers" label="參與人員">
+        <template slot-scope="scope">
+          <el-tooltip class="item" effect="dark" :open-delay="500" placement="top-start">
+            <div slot="content">
+              <span
+                class="userSpan"
+                v-for="(user,index) in scope.row.JoinUsers"
+                :key="user.Id"
+              >{{index+1}}.{{user.userName }}</span>
+            </div>
+            <p class="textOverflow">
+              <span
+                class="userSpan"
+                v-for="user in scope.row.JoinUsers"
+                :key="user.Id"
+              >{{user.userName}}</span>
+            </p>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+      <el-table-column sortable prop="EventStartDate" label="開始時間" width="180">
+        <template slot-scope="scope">
+          <span>{{dateFilter(scope.row.EventStartDate)}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column sortable prop="EventEndDate" label="結束時間" width="180">
+        <template slot-scope="scope">
+          <span>{{dateFilter(scope.row.EventEndDate)}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="EventName" label="操作" width="100">
+        <template slot-scope="scope">
+          <el-button @click="getEventById(scope.row.Id)" size="mini" type="primary">詳細</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!-- pagination -->
+
+    <div id="Pagination" v-if="currentPage">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="total"
+        :pager-count="5"
+        :current-page="setCurrentPage"
+        :page-size="pageSize"
+        @current-change="handleCurrentChange"
+      ></el-pagination>
     </div>
 
     <!-- eventDailog -->
@@ -114,106 +163,115 @@
         <el-button type="primary" @click="addToGoogleCalendar">新增到GOOGLE行事曆</el-button>
       </span>
     </el-dialog>
-    <!-- <el-button>默认按钮</el-button>
-    <el-button type="primary">主要按钮</el-button>
-    <el-button type="success">成功按钮</el-button>
-    <el-button type="info">信息按钮</el-button>
-    <el-button type="warning">警告按钮</el-button>
-    <el-button type="danger">危险按钮</el-button>-->
   </div>
 </template>
 
 <script>
 import Header from "../components/Header";
-import FullCalendar from "@fullcalendar/vue";
-import dayGridPlugin from "@fullcalendar/daygrid";
 import moment from "moment";
-import { Calendar } from "@fullcalendar/core";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
 export default {
-  name: "Calendar",
-  components: {
-    Header,
-    FullCalendar
-  },
+  name: "AdvancedSearch",
+  components: { Header },
   data() {
     return {
-      //globle data
+      // globel data
+      unitsData: "",
+      eventsData: "",
       eventTypeData: "",
-      eventData: "",
-
-      //filter box
-      searchInput: "",
-      typeCheckBox: [],
-      startDate: "",
-      endDate: "",
-      showMenu: false,
-
-      //calendar
-      calendarPlugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
-
-      //  dialog event
-      eventDailog: false,
+      // filter box
+      keywordInput: "",
+      unitSelect: "",
+      dateSelect: "",
+      searchLoading: false,
+      //   dialog
       dialogEvent: {},
-
-      // google calendar
+      eventDailog: false,
+      //   google calendar
       isLogInG: false,
       startG: "",
       endG: "",
-      titleG: ""
+      titleG: "",
+
+      // pagination
+      pageSize: "",
+      currentPage: "",
+      total: ""
     };
   },
   computed: {
-    isLogin() {
-      return window.localStorage.Token ? true : false;
-    },
-    eventFilter() {
-      const vm = this;
-      return vm.eventData.filter(event => {
-        return vm.typeCheckBox.includes(event.EventTypeName);
-      });
-    }
+    setCurrentPage() {}
   },
   methods: {
-    getEventData({ key, startDate, endDate }) {
+    async getUnits() {
       const vm = this;
-      let params = {
-        key,
-        startDate,
-        endDate
-      };
-      vm.$api.GetEvents(params).then(res => {
-        let arr = res.data.response.map(event => {
-          event.title = event.EventName;
-          event.end = moment(event.EventEndDate).format("YYYY-MM-DDTHH:mm:ss");
-          event.start = moment(event.EventStartDate).format(
-            "YYYY-MM-DDTHH:mm:ss"
-          );
-          return event;
-        });
-        vm.eventData = arr;
+      await vm.$api.GetUnits().then(res => {
+        vm.unitsData = res.data;
       });
     },
-    async getEventType() {
+    getEvents({ page, key, startDate, endDate, unitCode }) {
       const vm = this;
-      await vm.$api.GetEventType().then(res => {
+      let params = { page, key, startDate, endDate, unitCode };
+      vm.$api.GetEventsPage(params).then(res => {
+        vm.pageSize = res.data.response.PageSize;
+        vm.currentPage = res.data.response.page;
+        vm.total = res.data.response.dataCount;
+        vm.eventsData = res.data.response.data;
+        vm.searchLoading = false;
+      });
+    },
+    getEventType() {
+      const vm = this;
+      vm.$api.GetEventType().then(res => {
         vm.eventTypeData = res.data;
         vm.typeCheckBox = res.data.map(type => {
           return type.EventTypeName;
         });
       });
     },
-    searchHandler() {
-      console.log("search");
+    getEventById(Id) {
       const vm = this;
-      let startDate = vm.startDate;
-      let endDate = vm.endDate;
-      let key = vm.searchInput;
-      vm.getEventData({ key, startDate, endDate });
+      let params = {
+        Id
+      };
+      vm.$api.GetEventById(params).then(res => {
+        vm.dialogEvent = res.data.response;
+        console.log(vm.dialogEvent);
+        vm.$nextTick(() => {
+          vm.eventDailog = true;
+        });
+      });
     },
-    checkIncludes(type) {
-      return this.typeCheckBox.includes(type);
+    searchHandler() {
+      const vm = this;
+      vm.searchLoading = true;
+      let page = 1;
+      let key = vm.keywordInput;
+      let unitCode = vm.unitSelect;
+      let startDate;
+      let endDate;
+      if (vm.dateSelect !== null && vm.dateSelect) {
+        startDate = moment(vm.dateSelect[0]).format("YYYY-MM-DD");
+        endDate = moment(vm.dateSelect[1]).format("YYYY-MM-DD");
+      } else {
+        startDate = "";
+        endDate = "";
+      }
+      vm.getEvents({ page, key, startDate, endDate, unitCode });
+    },
+    handleCurrentChange(page) {
+      const vm = this;
+      let key = vm.keywordInput;
+      let unitCode = vm.unitSelect;
+      let startDate;
+      let endDate;
+      if (vm.dateSelect !== null && vm.dateSelect) {
+        startDate = moment(vm.dateSelect[0]).format("YYYY-MM-DD");
+        endDate = moment(vm.dateSelect[1]).format("YYYY-MM-DD");
+      } else {
+        startDate = "";
+        endDate = "";
+      }
+      vm.getEvents({ page, key, startDate, endDate, unitCode });
     },
     addToGoogleCalendar() {
       const vm = this;
@@ -316,33 +374,8 @@ export default {
       console.log(check2);
       check2 ? (this.isLogInG = true) : (this.isLogInG = false);
     },
-    eventRender(info) {
-      const vm = this;
-      info.el.addEventListener("click", function() {
-        let Id = info.event.extendedProps.Id;
-        let params = { Id };
-        vm.$api.GetEventById(params).then(res => {
-          vm.dialogEvent = res.data.response;
-          console.log(vm.dialogEvent);
-          vm.$nextTick(() => {
-            vm.eventDailog = true;
-          });
-        });
-      });
-    },
-    datesRender(info) {
-      const vm = this;
-      // console.log(info);
-      let type = info.view.viewSpec.type;
-      let startDate = moment(info.view.activeStart).format("yyyy-MM-DD");
-      let endDate = moment(info.view.activeEnd).format("yyyy-MM-DD");
-      let key = vm.searchInput;
-      vm.startDate = startDate;
-      vm.endDate = endDate;
-      // console.log(vm.startDate, vm.endDate, vm.getEventData);
-      vm.getEventData({ key, startDate, endDate });
-
-      // console.log(type, start, end);
+    dateFilter(date) {
+      return moment(date).format("YYYY-MM-DD HH:mm");
     },
     typeName(eid) {
       const vm = this;
@@ -352,11 +385,11 @@ export default {
         })
         .join("");
     },
-    dateFilter(date) {
-      return moment(date).format("YYYY-MM-DD HH:mm");
-    },
-    getShowMenu(boolen) {
-      this.showMenu = boolen;
+    unitNameFilter(id) {
+      const vm = this;
+      return vm.unitsData.filter(unit => {
+        return unit.UntId === id;
+      })[0].UntNameFull;
     }
   },
   async mounted() {
@@ -367,17 +400,13 @@ export default {
       });
       // console.log(gapi.client.hasOwnProperty("calendar"));
     });
-    const vm = this;
-    this.getEventData("", "", "");
-    await this.getEventType();
+    this.getEvents(1, "", "", "", "");
+    this.getEventType();
+    await this.getUnits();
     this.logInCheck();
-    // this.typeCheckBox = this.typeFilter;
   }
 };
 </script>
 
-<style lang='scss'>
-@import "~@fullcalendar/core/main.css";
-@import "~@fullcalendar/daygrid/main.css";
-@import "~@fullcalendar/timegrid/main.css";
+<style>
 </style>
