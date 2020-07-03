@@ -11,12 +11,48 @@
     justify-content: space-between;
     height: 80px;
     border-radius: 8px;
+
+    @include rwd($lg) {
+      height: calc(100vh - 100px);
+      position: absolute;
+      z-index: 2;
+      top: 0;
+      margin-top: 100px;
+      width: 375px;
+      align-items: flex-start;
+      flex-direction: column;
+      box-shadow: 5px 5px 5px #888888;
+      transition: 0.3s;
+      justify-content: flex-start;
+      transform: translateX(-390px);
+    }
+
+    &.showMenu {
+      transform: translateX(0);
+    }
   }
 
   .keywordInput,
   .dateSelect,
   .unitSelect {
     width: 300px;
+
+    @include rwd($lg) {
+      margin: 0.75rem;
+    }
+  }
+
+  .keywordInput {
+    @include rwd($lg) {
+      margin-top: 2rem;
+    }
+  }
+
+  .searchBtn {
+    @include rwd($lg) {
+      margin: 0.75rem;
+      width: 300px;
+    }
   }
 
   .mainTable {
@@ -48,6 +84,10 @@
   .eventDailog {
     border-radius: 10px;
     width: 700px;
+
+    @include rwd($lg) {
+      width: 80%;
+    }
   }
 
   .eventTitle {
@@ -124,6 +164,12 @@
 
   .joinUserBox {
     margin-top: 1rem;
+  }
+
+  .addToGoogleBtn {
+    @include rwd($sm) {
+      margin-top: 0.75rem;
+    }
   }
 
   #Pagination {

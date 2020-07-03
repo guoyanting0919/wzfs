@@ -1,9 +1,9 @@
 <template>
   <div id="AdvancedSearch">
-    <Header></Header>
+    <Header @getShowMenu="getShowMenu"></Header>
 
     <!-- fillterBox -->
-    <div class="filterBox">
+    <div class="filterBox" :class="{'showMenu':showMenu}">
       <el-input
         @keyup.native.enter="searchHandler"
         class="keywordInput"
@@ -37,7 +37,7 @@
         end-placeholder="结束日期"
       ></el-date-picker>
 
-      <el-button :loading="searchLoading" @click="searchHandler" type="primary">搜尋</el-button>
+      <el-button class="searchBtn" :loading="searchLoading" @click="searchHandler" type="primary">搜尋</el-button>
     </div>
 
     <!-- mainTable -->
@@ -152,15 +152,15 @@
         <div class="joinUserBox" v-if="dialogEvent.JoinUsers">
           <p class="boxTitle">參與人員</p>
           <el-table empty-text="登入後查看" :data="dialogEvent.JoinUsers">
-            <el-table-column property="userName" label="姓名" width="150"></el-table-column>
-            <el-table-column property="usertitle" label="職稱" width="200"></el-table-column>
+            <el-table-column property="userName" label="姓名"></el-table-column>
+            <el-table-column property="usertitle" label="職稱"></el-table-column>
             <el-table-column property="unit" label="單位"></el-table-column>
           </el-table>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="info" @click="eventDailog = false">取 消</el-button>
-        <el-button type="primary" @click="addToGoogleCalendar">新增到GOOGLE行事曆</el-button>
+        <el-button class="addToGoogleBtn" type="primary" @click="addToGoogleCalendar">新增到GOOGLE行事曆</el-button>
       </span>
     </el-dialog>
   </div>
@@ -183,6 +183,7 @@ export default {
       unitSelect: "",
       dateSelect: "",
       searchLoading: false,
+      showMenu: false,
       //   dialog
       dialogEvent: {},
       eventDailog: false,
@@ -243,6 +244,7 @@ export default {
     },
     searchHandler() {
       const vm = this;
+      vm.showMenu = false;
       vm.searchLoading = true;
       let page = 1;
       let key = vm.keywordInput;
@@ -302,6 +304,7 @@ export default {
       }
     },
     authenticate() {
+      console.log("authenticate");
       //若尚未登入則跳出登入視窗
       const vm = this;
       return gapi.auth2
@@ -344,6 +347,7 @@ export default {
         );
     },
     loadClient() {
+      console.log("loadClient");
       // 設定api key 並登入
       const vm = this;
       gapi.client.setApiKey("AIzaSyApyW42vDYl7TrGihL1wYqBARlRHVS__A8");
@@ -390,6 +394,9 @@ export default {
       return vm.unitsData.filter(unit => {
         return unit.UntId === id;
       })[0].UntNameFull;
+    },
+    getShowMenu(boolen) {
+      this.showMenu = boolen;
     }
   },
   async mounted() {

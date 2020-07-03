@@ -53,7 +53,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  mode: "history",
+  mode: "hash",
   base: process.env.BASE_URL,
   routes,
   scrollBehavior(to, from, savedPosition) {
@@ -94,7 +94,7 @@ router.beforeEach((to, from, next) => {
 
     // 判斷該路由是否需要登入權限
     if (to.meta.requireAuth) {
-      if (store.state.token && store.state.token != "undefined") {
+      if (store.state.token && store.state.token != undefined) {
         // 通過vuex state獲取當前的token是否存在
         next();
       } else {

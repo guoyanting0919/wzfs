@@ -103,8 +103,8 @@
         <div class="joinUserBox" v-if="dialogEvent.JoinUsers">
           <p class="boxTitle">參與人員</p>
           <el-table empty-text="登入後查看" :data="dialogEvent.JoinUsers">
-            <el-table-column property="userName" label="姓名" width="150"></el-table-column>
-            <el-table-column property="usertitle" label="職稱" width="200"></el-table-column>
+            <el-table-column property="userName" label="姓名"></el-table-column>
+            <el-table-column property="usertitle" label="職稱"></el-table-column>
             <el-table-column property="unit" label="單位"></el-table-column>
           </el-table>
         </div>
