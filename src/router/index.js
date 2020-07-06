@@ -102,10 +102,9 @@ router.beforeEach((to, from, next) => {
         store.commit("SAVE_TOKEN_EXPIRE", "");
         window.localStorage.removeItem("user");
 
-        Vue.prototype.$notify({
-          title: "提醒",
-          message: "請先登入帳號",
-          type: "warning",
+        Vue.prototype.$alertT.fire({
+          icon: "info",
+          title: `請先登入帳號`,
         });
 
         next({

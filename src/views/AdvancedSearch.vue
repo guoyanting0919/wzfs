@@ -381,34 +381,42 @@ export default {
       const vm = this;
       if (vm.isLogInG) {
         //已登入則設定參數並執行 post()
-        vm.$confirm(
-          `確認新增 ${vm.dialogEvent.EventName} 至Google行事曆?`,
-          "提示",
-          {
-            confirmButtonText: "確定",
-            cancelButtonText: "取消",
-            type: "warning"
+        vm.$swal({
+          title: "新增提示",
+          text: `確認新增 ${vm.dialogEvent.EventName} 至Google行事曆?`,
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#2f3e52",
+          cancelButtonColor: "#522f2f",
+          confirmButtonText: "確定",
+          cancelButtonText: "取消"
+        }).then(result => {
+          if (result.value) {
+            vm.$store.dispatch("loadingHandler", true);
+            vm.startG = moment(vm.dialogEvent.EventStartDate).format();
+            vm.endG = moment(vm.dialogEvent.EventEndDate).format();
+            vm.titleG = vm.dialogEvent.EventName;
+            vm.postGoogleCalendar();
+          } else {
+            vm.$alertT.fire({
+              icon: "info",
+              title: `已取消添加`
+            });
           }
-        ).then(() => {
-          vm.startG = moment(vm.dialogEvent.EventStartDate).format();
-          vm.endG = moment(vm.dialogEvent.EventEndDate).format();
-          vm.titleG = vm.dialogEvent.EventName;
-          vm.postGoogleCalendar();
         });
       } else {
         //尚未登入執行authenticate
-        vm.$notify({
-          title: "提醒",
-          message: "請先登入Google帳號",
-          type: "warning"
+        vm.$alertT.fire({
+          icon: "info",
+          title: "請先登入Google帳號"
         });
         vm.authenticate();
       }
     },
     authenticate() {
-      console.log("authenticate");
       //若尚未登入則跳出登入視窗
       const vm = this;
+      vm.$store.dispatch("loadingHandler", true);
       return gapi.auth2
         .getAuthInstance()
         .signIn({
@@ -421,6 +429,7 @@ export default {
           },
           function(err) {
             console.error("Error signing in", err);
+            vm.$store.dispatch("loadingHandler", true);
           }
         );
     },
@@ -437,19 +446,22 @@ export default {
         })
         .then(
           function(response) {
-            vm.$notify({
-              title: "成功",
-              message: `已新增 ${vm.dialogEvent.EventName} 至Google行事曆`,
-              type: "success"
+            vm.$store.dispatch("loadingHandler", false);
+            vm.$alertT.fire({
+              icon: "success",
+              title: `已新增 ${vm.dialogEvent.EventName} 至Google行事曆`
             });
           },
           function(err) {
-            console.error("Execute error", err);
+            vm.$alertT.fire({
+              icon: "error",
+              title: `發生錯誤`
+            });
+            vm.$store.dispatch("loadingHandler", false);
           }
         );
     },
     loadClient() {
-      console.log("loadClient");
       // 設定api key 並登入
       const vm = this;
       gapi.client.setApiKey("AIzaSyApyW42vDYl7TrGihL1wYqBARlRHVS__A8");
@@ -459,10 +471,10 @@ export default {
         )
         .then(
           function() {
-            vm.$notify({
-              title: "登入成功",
-              message: "已登入Google帳號",
-              type: "success"
+            vm.$store.dispatch("loadingHandler", false);
+            vm.$alertM.fire({
+              icon: "success",
+              title: "已成功登入Google帳號"
             });
             // console.log("GAPI client loaded for API");
             // console.log(gapi.client.hasOwnProperty("calendar"));

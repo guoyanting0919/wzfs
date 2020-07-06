@@ -47,3 +47,27 @@ button {
 .tableHeader {
   background-color: lighten($color: $colorPrimary, $amount: 68) !important;
 }
+
+.el-dialog__wrapper {
+  z-index: 10 !important;
+}
+
+.v-modal {
+  z-index: 9 !important;
+}
+
+.vld-overlay.is-full-page {
+  z-index: 999;
+}
+
+.swal2-cancel {
+  order: -1;
+}
+// safari 相容
+input {
+  line-height: normal;
+}
+
+javascript .el-table__body {
+  width: 100%;
+}
