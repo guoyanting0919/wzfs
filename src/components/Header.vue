@@ -50,7 +50,7 @@ export default {
   data() {
     return {
       loginDialog: false,
-      account: "admin",
+      account: "87042",
       password: "0000000",
       showMenu: false
     };
