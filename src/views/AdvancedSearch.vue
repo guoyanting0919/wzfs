@@ -125,7 +125,7 @@
           <p class="boxTitle">結束時間</p>
           <p>{{dateFilter(dialogEvent.EventEndDate)}}</p>
         </div>
-        <div class="dialogBox">
+        <div class="dialogBox" style="flex-wrap: wrap;">
           <p class="boxTitle">活動描述</p>
           <div class="personalContainer mt-5 ck" ref="ck">
             <ckeditor

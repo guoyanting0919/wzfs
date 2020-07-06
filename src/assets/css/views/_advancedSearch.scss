@@ -140,13 +140,8 @@
   }
 
   .ck.ck-editor {
-    width: 85%;
-    margin: auto;
-
-    @include rwd($md) {
-      width: 100%;
-      margin-top: 1rem;
-    }
+    width: 100%;
+    margin-top: 1rem;
   }
 
   .ck .ck-sticky-panel__content {
