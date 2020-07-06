@@ -43,3 +43,7 @@ button {
 .el-notification__closeBtn {
   display: none;
 }
+
+.tableHeader {
+  background-color: lighten($color: $colorPrimary, $amount: 68) !important;
+}

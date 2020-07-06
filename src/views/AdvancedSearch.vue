@@ -42,10 +42,11 @@
 
     <!-- mainTable -->
     <el-table
+      header-cell-class-name="tableHeader"
       :default-sort="{prop: 'date', order: 'descending'}"
       v-if="eventsData"
       :data="eventsData"
-      height="650"
+      style="height: 650px;margin-top: 3rem;"
       border
       empty-text="暫無資料"
       class="mainTable"
@@ -126,7 +127,14 @@
         </div>
         <div class="dialogBox">
           <p class="boxTitle">活動描述</p>
-          <p class="summaryBox">{{dialogEvent.Summary}}</p>
+          <div class="personalContainer mt-5 ck" ref="ck">
+            <ckeditor
+              :disabled="editorDisabled"
+              :editor="editor"
+              v-model="dialogEvent.Summary"
+              :config="editorConfig"
+            ></ckeditor>
+          </div>
         </div>
         <div class="dialogBox">
           <p class="boxTitle">活動連結</p>
@@ -151,7 +159,12 @@
         </div>
         <div class="joinUserBox" v-if="dialogEvent.JoinUsers">
           <p class="boxTitle">參與人員</p>
-          <el-table empty-text="登入後查看" :data="dialogEvent.JoinUsers">
+          <el-table
+            header-cell-class-name="tableHeader"
+            empty-text="登入後查看"
+            :data="dialogEvent.JoinUsers"
+            style="margin-top:1rem"
+          >
             <el-table-column property="userName" label="姓名"></el-table-column>
             <el-table-column property="usertitle" label="職稱"></el-table-column>
             <el-table-column property="unit" label="單位"></el-table-column>
@@ -169,6 +182,28 @@
 <script>
 import Header from "../components/Header";
 import moment from "moment";
+import interactionPlugin from "@fullcalendar/interaction";
+import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
+import EssentialsPlugin from "@ckeditor/ckeditor5-essentials/src/essentials";
+import BoldPlugin from "@ckeditor/ckeditor5-basic-styles/src/bold";
+import ItalicPlugin from "@ckeditor/ckeditor5-basic-styles/src/italic";
+import LinkPlugin from "@ckeditor/ckeditor5-link/src/link";
+import ParagraphPlugin from "@ckeditor/ckeditor5-paragraph/src/paragraph";
+import Alignment from "@ckeditor/ckeditor5-alignment/src/alignment";
+import Heading from "@ckeditor/ckeditor5-heading/src/heading.js";
+import FontBackgroundColor from "@ckeditor/ckeditor5-font/src/fontbackgroundcolor.js";
+import FontColor from "@ckeditor/ckeditor5-font/src/fontcolor.js";
+import FontFamily from "@ckeditor/ckeditor5-font/src/fontfamily.js";
+import FontSize from "@ckeditor/ckeditor5-font/src/fontsize.js";
+import MediaEmbed from "@ckeditor/ckeditor5-media-embed/src/mediaembed.js";
+import List from "@ckeditor/ckeditor5-list/src/list.js";
+import Image from "@ckeditor/ckeditor5-image/src/image.js";
+import ImageCaption from "@ckeditor/ckeditor5-image/src/imagecaption.js";
+import ImageResize from "@ckeditor/ckeditor5-image/src/imageresize.js";
+import ImageStyle from "@ckeditor/ckeditor5-image/src/imagestyle.js";
+import ImageToolbar from "@ckeditor/ckeditor5-image/src/imagetoolbar.js";
+import ImageUpload from "@ckeditor/ckeditor5-image/src/imageupload.js";
+import CKFinder from "@ckeditor/ckeditor5-ckfinder/src/ckfinder";
 export default {
   name: "AdvancedSearch",
   components: { Header },
@@ -196,7 +231,74 @@ export default {
       // pagination
       pageSize: "",
       currentPage: "",
-      total: ""
+      total: "",
+
+      // ck
+      editor: ClassicEditor,
+      editorConfig: {
+        plugins: [
+          EssentialsPlugin,
+          BoldPlugin,
+          ItalicPlugin,
+          LinkPlugin,
+          ParagraphPlugin,
+          Alignment,
+          Heading,
+          FontBackgroundColor,
+          FontColor,
+          FontFamily,
+          FontSize,
+          MediaEmbed,
+          List,
+          Image,
+          ImageResize,
+          ImageUpload,
+          ImageToolbar,
+          ImageCaption,
+          ImageStyle,
+          CKFinder
+        ],
+
+        toolbar: {
+          items: [
+            "heading",
+            "|",
+            "bold",
+            "italic",
+            "|",
+            "fontBackgroundColor",
+            "fontColor",
+            "fontSize",
+            "|",
+            "link",
+            "imageUpload",
+            "mediaEmbed",
+            "|",
+            "alignment",
+            "numberedList",
+            "|",
+            "undo",
+            "redo"
+          ]
+        },
+        image: {
+          toolbar: [
+            "imageTextAlternative",
+            "|",
+            "imageStyle:full",
+            "imageStyle:side"
+          ]
+        },
+        ckfinder: {
+          uploadUrl: `https://scan.1966.org.tw/images/Upload/Pic`,
+          // 後端的上傳圖片 API 路徑
+          options: {
+            resourceType: "Images"
+            // 限定類型為圖片
+          }
+        }
+      },
+      editorDisabled: true
     };
   },
   computed: {

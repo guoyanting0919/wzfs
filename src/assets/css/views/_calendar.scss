@@ -161,17 +161,17 @@
     @include rwd($md) {
       width: 90%;
     }
-  }
 
-  .el-dialog__header {
-    position: fixed;
-    z-index: 2;
-    background: #fff;
-    width: 70%;
-    border-radius: 10px;
+    .el-dialog__header {
+      position: fixed;
+      z-index: 2;
+      background: #fff;
+      width: 70%;
+      border-radius: 10px;
 
-    @include rwd($md) {
-      width: 80%;
+      @include rwd($md) {
+        width: 80%;
+      }
     }
   }
 
@@ -235,13 +235,13 @@
   }
 
   .ck.ck-editor {
-    width: 85%;
-    margin: auto;
+    width: 95%;
+    margin-top: 1rem;
 
-    @include rwd($md) {
-      width: 100%;
-      margin-top: 1rem;
-    }
+    // @include rwd($md) {
+    //   width: 100%;
+    //   margin: auto;
+    // }
   }
 
   .ck .ck-sticky-panel__content {
