@@ -267,7 +267,7 @@ export default {
   },
   computed: {
     isLogin() {
-      return window.localStorage.Token ? true : false;
+      return window.localStorage.Tokenf ? true : false;
     },
     eventFilter() {
       const vm = this;
@@ -337,6 +337,7 @@ export default {
             vm.titleG = vm.dialogEvent.EventName;
             vm.postGoogleCalendar();
           } else {
+            vm.$store.dispatch("loadingHandler", false);
             vm.$alertT.fire({
               icon: "info",
               title: `已取消添加`
@@ -368,7 +369,7 @@ export default {
           },
           function(err) {
             console.error("Error signing in", err);
-            vm.$store.dispatch("loadingHandler", true);
+            vm.$store.dispatch("loadingHandler", false);
           }
         );
     },
@@ -476,7 +477,7 @@ export default {
   },
   async mounted() {
     this.$store.dispatch("loadingHandler", true);
-    gapi.load("client:auth2", function() {
+    await gapi.load("client:auth2", function() {
       gapi.auth2.init({
         client_id:
           "1053736036780-t7p90l1lq51th52k6cdt22onksgrl4k7.apps.googleusercontent.com"
@@ -486,7 +487,7 @@ export default {
     const vm = this;
     this.getEventData("", "", "");
     await this.getEventType();
-    this.logInCheck();
+    // await this.logInCheck();
     this.$store.dispatch("loadingHandler", false);
 
     // this.typeCheckBox = this.typeFilter;

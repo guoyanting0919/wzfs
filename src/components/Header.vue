@@ -4,9 +4,6 @@
       <i @click="setShowMenu" class="fas fa-bars"></i>
       <img @click="$router.push('/Calendar')" src="../assets/images/wzlogo.png" alt />
       <div class="btnBox">
-        <!-- <el-button v-if="!userName" @click="loginDialog=true" size="mini" type="info">登入</el-button>
-        <el-button v-if="userName" @click="logoutHandler" size="mini" type="info">登出</el-button>
-        <p class="userName" v-if="userName">{{userName}}</p>-->
         <i :class="{'loginIcon':userName}" class="fas fa-user"></i>
         <p v-if="!userName" class="loginBox" @click="loginDialog=true">登入帳號</p>
         <p v-if="userName" class="userName">{{userName}}</p>
@@ -36,6 +33,12 @@
           placeholder="請輸入密碼"
         ></el-input>
       </label>
+      <div class="identifyBox">
+        <div @click="refreshCode">
+          <Identify :identifyCode="identifyCode"></Identify>
+        </div>
+        <input type="text" v-model="code" placeholder="請輸入驗證碼" />
+      </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="info" @click="loginDialog = false">取 消</el-button>
         <el-button type="primary" @click="loginHandler">登 入</el-button>
@@ -45,14 +48,23 @@
 </template>
 
 <script>
+import Identify from "../components/Identify";
 export default {
   name: "Header",
+  components: {
+    Identify
+  },
   data() {
     return {
       loginDialog: false,
       account: "87042",
       password: "0000000",
-      showMenu: false
+      showMenu: false,
+
+      // 數字驗證
+      code: "",
+      identifyCodes: "1234567890",
+      identifyCode: ""
     };
   },
   computed: {
@@ -67,23 +79,37 @@ export default {
   methods: {
     loginHandler() {
       const vm = this;
-      let params = {
-        account: vm.account,
-        password: vm.password
-      };
-      vm.$api.GetToken(params).then(res => {
-        let token = res.data.token;
-        vm.$store.commit("SAVE_TOKEN", token);
-        let curTime = new Date();
-        let expiredate = new Date(
-          curTime.setSeconds(curTime.getSeconds() + res.data.expires_in)
-        );
-        vm.$store.commit("SAVE_TOKEN_EXPIRE", expiredate);
+      if (vm.account === "" || vm.password === "") {
+        vm.$alertT.fire({
+          icon: "error",
+          title: `請確實填寫帳號密碼`
+        });
+      } else {
+        if (vm.identifyCode !== vm.code) {
+          vm.$alertT.fire({
+            icon: "error",
+            title: `驗證碼輸入錯誤`
+          });
+        } else {
+          let params = {
+            account: vm.account,
+            password: vm.password
+          };
+          vm.$api.GetToken(params).then(res => {
+            let token = res.data.token;
+            vm.$store.commit("SAVE_TOKEN", token);
+            let curTime = new Date();
+            let expiredate = new Date(
+              curTime.setSeconds(curTime.getSeconds() + res.data.expires_in)
+            );
+            vm.$store.commit("SAVE_TOKEN_EXPIRE", expiredate);
 
-        window.localStorage.refreshtime = expiredate;
-        window.localStorage.expires_in = res.data.expires_in;
-        vm.getInfoByToken(token);
-      });
+            window.localStorage.refreshtime = expiredate;
+            window.localStorage.expires_in = res.data.expires_in;
+            vm.getInfoByToken(token);
+          });
+        }
+      }
     },
     getInfoByToken(token) {
       const vm = this;
@@ -104,7 +130,7 @@ export default {
         type: "warning"
       }).then(() => {
         window.localStorage.removeItem("user");
-        window.localStorage.removeItem("Token");
+        window.localStorage.removeItem("Tokenf");
         window.localStorage.removeItem("TokenExpire");
         window.localStorage.removeItem("refreshtime");
         window.localStorage.removeItem("router");
@@ -115,7 +141,28 @@ export default {
     setShowMenu() {
       this.showMenu = !this.showMenu;
       this.$emit("getShowMenu", this.showMenu);
+    },
+    // 生成隨機數
+    randomNum(min, max) {
+      return Math.floor(Math.random() * (max - min) + min);
+    },
+    // 切換驗證碼
+    refreshCode() {
+      this.identifyCode = "";
+      this.makeCode(this.identifyCodes, 4);
+    },
+    // 生成四位隨機驗證碼
+    makeCode(o, l) {
+      for (let i = 0; i < l; i++) {
+        this.identifyCode += this.identifyCodes[
+          this.randomNum(0, this.identifyCodes.length)
+        ];
+      }
     }
+  },
+  mounted() {
+    this.identifyCode = "";
+    this.makeCode(this.identifyCodes, 4);
   }
 };
 </script>

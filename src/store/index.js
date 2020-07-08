@@ -21,7 +21,7 @@ export default new Vuex.Store({
     },
     SAVE_TOKEN(state, data) {
       state.token = data;
-      window.localStorage.setItem("Token", data);
+      window.localStorage.setItem("Tokenf", data);
     },
     SAVE_TOKEN_EXPIRE(state, data) {
       state.tokenExpire = data;

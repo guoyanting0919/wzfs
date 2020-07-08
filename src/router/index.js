@@ -71,8 +71,8 @@ router.beforeEach((to, from, next) => {
   // 檢查 token
   {
     if (!store.state.token) {
-      if (window.localStorage.Token) {
-        store.commit("SAVE_TOKEN", window.localStorage.Token);
+      if (window.localStorage.Tokenf) {
+        store.commit("SAVE_TOKEN", window.localStorage.Tokenf);
         Vue.prototype.$api
           .CheckTokenExpire({ token: store.state.token })
           .then((res) => {
