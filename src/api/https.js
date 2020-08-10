@@ -32,9 +32,10 @@ const errorHandle = (status, msg) => {
   }
 };
 
+let url = process.env.VUE_APP_BASE_URL;
 // 設定 baseURL
 let instance = axios.create({
-  baseURL: "https://scan.1966.org.tw/api/",
+  baseURL: url,
 });
 
 // request 攔截

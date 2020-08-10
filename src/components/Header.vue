@@ -52,29 +52,29 @@ import Identify from "../components/Identify";
 export default {
   name: "Header",
   components: {
-    Identify
+    Identify,
   },
   data() {
     return {
       loginDialog: false,
-      account: "87042",
-      password: "0000000",
+      account: "99968",
+      password: "test1234",
       showMenu: false,
 
       // 數字驗證
       code: "",
       identifyCodes: "1234567890",
-      identifyCode: ""
+      identifyCode: "",
     };
   },
   computed: {
     userName() {
-      if (window.localStorage.getItem("user")) {
-        return JSON.parse(window.localStorage.getItem("user")).LoginName;
+      if (window.localStorage.getItem("userf")) {
+        return JSON.parse(window.localStorage.getItem("userf")).RealName;
       } else {
         return "";
       }
-    }
+    },
   },
   methods: {
     loginHandler() {
@@ -82,20 +82,20 @@ export default {
       if (vm.account === "" || vm.password === "") {
         vm.$alertT.fire({
           icon: "error",
-          title: `請確實填寫帳號密碼`
+          title: `請確實填寫帳號密碼`,
         });
       } else {
         if (vm.identifyCode !== vm.code) {
           vm.$alertT.fire({
             icon: "error",
-            title: `驗證碼輸入錯誤`
+            title: `驗證碼輸入錯誤`,
           });
         } else {
           let params = {
             account: vm.account,
-            password: vm.password
+            password: vm.password,
           };
-          vm.$api.GetToken(params).then(res => {
+          vm.$api.GetToken(params).then((res) => {
             let token = res.data.token;
             vm.$store.commit("SAVE_TOKEN", token);
             let curTime = new Date();
@@ -114,10 +114,10 @@ export default {
     getInfoByToken(token) {
       const vm = this;
       let params = {
-        token
+        token,
       };
-      vm.$api.GetInfoByToken(params).then(res => {
-        window.localStorage.user = JSON.stringify(res.data.response);
+      vm.$api.GetInfoByToken(params).then((res) => {
+        window.localStorage.userf = JSON.stringify(res.data.response);
         vm.loginDialog = false;
         window.location.reload();
       });
@@ -127,9 +127,9 @@ export default {
       vm.$confirm(`確認登出?`, "提示", {
         confirmButtonText: "確定",
         cancelButtonText: "取消",
-        type: "warning"
+        type: "warning",
       }).then(() => {
-        window.localStorage.removeItem("user");
+        window.localStorage.removeItem("userf");
         window.localStorage.removeItem("Tokenf");
         window.localStorage.removeItem("TokenExpire");
         window.localStorage.removeItem("refreshtime");
@@ -158,12 +158,12 @@ export default {
           this.randomNum(0, this.identifyCodes.length)
         ];
       }
-    }
+    },
   },
   mounted() {
     this.identifyCode = "";
     this.makeCode(this.identifyCodes, 4);
-  }
+  },
 };
 </script>
 

@@ -33,6 +33,7 @@
         v-model="dateSelect"
         type="daterange"
         range-separator="~"
+        clearable
         start-placeholder="開始日期"
         end-placeholder="结束日期"
       ></el-date-picker>
@@ -151,7 +152,7 @@
             :key="index"
             target="_blank"
             class="eventLink"
-            :href="`https://scan.1966.org.tw/${url}`"
+            :href="`http://140.127.170.229/${url}`"
           >
             <i class="fas fa-file-download"></i>
             附件下載
@@ -209,6 +210,8 @@ export default {
   components: { Header },
   data() {
     return {
+      // baseUrl
+      baseUrl: "",
       // globel data
       unitsData: "",
       eventsData: "",
@@ -256,7 +259,7 @@ export default {
           ImageToolbar,
           ImageCaption,
           ImageStyle,
-          CKFinder
+          CKFinder,
         ],
 
         toolbar: {
@@ -278,43 +281,43 @@ export default {
             "numberedList",
             "|",
             "undo",
-            "redo"
-          ]
+            "redo",
+          ],
         },
         image: {
           toolbar: [
             "imageTextAlternative",
             "|",
             "imageStyle:full",
-            "imageStyle:side"
-          ]
+            "imageStyle:side",
+          ],
         },
         ckfinder: {
           uploadUrl: `https://scan.1966.org.tw/images/Upload/Pic`,
           // 後端的上傳圖片 API 路徑
           options: {
-            resourceType: "Images"
+            resourceType: "Images",
             // 限定類型為圖片
-          }
-        }
+          },
+        },
       },
-      editorDisabled: true
+      editorDisabled: true,
     };
   },
   computed: {
-    setCurrentPage() {}
+    setCurrentPage() {},
   },
   methods: {
     async getUnits() {
       const vm = this;
-      await vm.$api.GetUnits().then(res => {
+      await vm.$api.GetUnits().then((res) => {
         vm.unitsData = res.data;
       });
     },
     getEvents({ page, key, startDate, endDate, unitCode }) {
       const vm = this;
       let params = { page, key, startDate, endDate, unitCode };
-      vm.$api.GetEventsPage(params).then(res => {
+      vm.$api.GetEventsPage(params).then((res) => {
         vm.pageSize = res.data.response.PageSize;
         vm.currentPage = res.data.response.page;
         vm.total = res.data.response.dataCount;
@@ -324,9 +327,9 @@ export default {
     },
     getEventType() {
       const vm = this;
-      vm.$api.GetEventType().then(res => {
+      vm.$api.GetEventType().then((res) => {
         vm.eventTypeData = res.data;
-        vm.typeCheckBox = res.data.map(type => {
+        vm.typeCheckBox = res.data.map((type) => {
           return type.EventTypeName;
         });
       });
@@ -334,9 +337,9 @@ export default {
     getEventById(Id) {
       const vm = this;
       let params = {
-        Id
+        Id,
       };
-      vm.$api.GetEventById(params).then(res => {
+      vm.$api.GetEventById(params).then((res) => {
         vm.dialogEvent = res.data.response;
         console.log(vm.dialogEvent);
         vm.$nextTick(() => {
@@ -389,8 +392,8 @@ export default {
           confirmButtonColor: "#2f3e52",
           cancelButtonColor: "#522f2f",
           confirmButtonText: "確定",
-          cancelButtonText: "取消"
-        }).then(result => {
+          cancelButtonText: "取消",
+        }).then((result) => {
           if (result.value) {
             vm.$store.dispatch("loadingHandler", true);
             vm.startG = moment(vm.dialogEvent.EventStartDate).format();
@@ -400,7 +403,7 @@ export default {
           } else {
             vm.$alertT.fire({
               icon: "info",
-              title: `已取消添加`
+              title: `已取消添加`,
             });
           }
         });
@@ -408,7 +411,7 @@ export default {
         //尚未登入執行authenticate
         vm.$alertT.fire({
           icon: "info",
-          title: "請先登入Google帳號"
+          title: "請先登入Google帳號",
         });
         vm.authenticate();
       }
@@ -421,13 +424,13 @@ export default {
         .getAuthInstance()
         .signIn({
           scope:
-            "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events"
+            "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events",
         })
         .then(
-          function() {
+          function () {
             vm.loadClient();
           },
-          function(err) {
+          function (err) {
             console.error("Error signing in", err);
             vm.$store.dispatch("loadingHandler", true);
           }
@@ -441,21 +444,21 @@ export default {
           resource: {
             end: { dateTime: vm.endG },
             start: { dateTime: vm.startG },
-            summary: vm.titleG
-          }
+            summary: vm.titleG,
+          },
         })
         .then(
-          function(response) {
+          function (response) {
             vm.$store.dispatch("loadingHandler", false);
             vm.$alertT.fire({
               icon: "success",
-              title: `已新增 ${vm.dialogEvent.EventName} 至Google行事曆`
+              title: `已新增 ${vm.dialogEvent.EventName} 至Google行事曆`,
             });
           },
-          function(err) {
+          function (err) {
             vm.$alertT.fire({
               icon: "error",
-              title: `發生錯誤`
+              title: `發生錯誤`,
             });
             vm.$store.dispatch("loadingHandler", false);
           }
@@ -470,17 +473,17 @@ export default {
           "https://content.googleapis.com/discovery/v1/apis/calendar/v3/rest"
         )
         .then(
-          function() {
+          function () {
             vm.$store.dispatch("loadingHandler", false);
             vm.$alertM.fire({
               icon: "success",
-              title: "已成功登入Google帳號"
+              title: "已成功登入Google帳號",
             });
             // console.log("GAPI client loaded for API");
             // console.log(gapi.client.hasOwnProperty("calendar"));
             vm.logInCheck();
           },
-          function(err) {
+          function (err) {
             console.error("Error loading GAPI client for API", err);
           }
         );
@@ -498,26 +501,27 @@ export default {
     typeName(eid) {
       const vm = this;
       return vm.eventTypeData
-        .map(event => {
+        .map((event) => {
           return event.Id === eid ? event.EventTypeName : "";
         })
         .join("");
     },
     unitNameFilter(id) {
       const vm = this;
-      return vm.unitsData.filter(unit => {
+      return vm.unitsData.filter((unit) => {
         return unit.UntId === id;
       })[0].UntNameFull;
     },
     getShowMenu(boolen) {
       this.showMenu = boolen;
-    }
+    },
   },
   async mounted() {
-    gapi.load("client:auth2", function() {
+    this.baseUrl = process.env.VUE_APP_BASE_URL;
+    gapi.load("client:auth2", function () {
       gapi.auth2.init({
         client_id:
-          "1053736036780-t7p90l1lq51th52k6cdt22onksgrl4k7.apps.googleusercontent.com"
+          "1053736036780-t7p90l1lq51th52k6cdt22onksgrl4k7.apps.googleusercontent.com",
       });
       // console.log(gapi.client.hasOwnProperty("calendar"));
     });
@@ -525,7 +529,7 @@ export default {
     this.getEventType();
     await this.getUnits();
     this.logInCheck();
-  }
+  },
 };
 </script>
 

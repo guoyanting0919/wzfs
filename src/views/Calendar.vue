@@ -37,6 +37,7 @@
     <div id="fullCalendar">
       <FullCalendar
         v-if="eventData"
+        locale="zh-tw"
         class="wzCalendar"
         defaultView="dayGridMonth"
         :plugins="calendarPlugins"
@@ -44,8 +45,8 @@
         :events="eventFilter"
         :eventLimit="true"
         height="parent"
+        :eventTimeFormat="eventTimeFormat"
         :allDaySlot="false"
-        :displayEventEnd="true"
         @eventRender="this.eventRender"
         @datesRender="this.datesRender"
         ref="fullCalendar"
@@ -67,6 +68,10 @@
         <el-divider></el-divider>
       </div>
       <div class="dialogMain">
+        <div class="dialogBox">
+          <p class="boxTitle">活動地點</p>
+          <p>{{dialogEvent.EventAddr}}</p>
+        </div>
         <div class="dialogBox">
           <p class="boxTitle">開始時間</p>
           <p>{{dateFilter(dialogEvent.EventStartDate)}}</p>
@@ -90,7 +95,7 @@
         <div class="dialogBox">
           <p class="boxTitle">活動連結</p>
           <p class="noInfo" v-if="!dialogEvent.LinkUrl">暫無連結</p>
-          <a class="eventLink" target="_blank" :href="dialogEvent.LinkUrl">
+          <a class="eventLink" v-else target="_blank" :href="dialogEvent.LinkUrl">
             <i class="fas fa-link"></i>前往連結
           </a>
         </div>
@@ -102,7 +107,7 @@
             :key="index"
             target="_blank"
             class="eventLink"
-            :href="`https://scan.1966.org.tw/${url}`"
+            :href="`http://140.127.170.229/${url}`"
           >
             <i class="fas fa-file-download"></i>
             附件下載
@@ -119,6 +124,7 @@
             <el-table-column property="userName" label="姓名"></el-table-column>
             <el-table-column property="usertitle" label="職稱"></el-table-column>
             <el-table-column property="unit" label="單位"></el-table-column>
+            <el-table-column property="userType" label="角色"></el-table-column>
           </el-table>
         </div>
       </div>
@@ -142,6 +148,7 @@ import FullCalendar from "@fullcalendar/vue";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import moment from "moment";
 import { Calendar } from "@fullcalendar/core";
+import twLocale from "@fullcalendar/core/locales/zh-tw";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor";
@@ -169,10 +176,12 @@ export default {
   name: "Calendar",
   components: {
     Header,
-    FullCalendar
+    FullCalendar,
   },
   data() {
     return {
+      // baseUrl
+      baseUrl: "",
       //globle data
       eventTypeData: "",
       eventData: "",
@@ -186,6 +195,13 @@ export default {
 
       //calendar
       calendarPlugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+      eventTimeFormat: {
+        hour: "numeric",
+        minute: "2-digit",
+        omitZeroMinute: false,
+        meridiem: "narrow",
+        hour12: false,
+      },
 
       //  dialog event
       eventDailog: false,
@@ -220,7 +236,7 @@ export default {
           ImageToolbar,
           ImageCaption,
           ImageStyle,
-          CKFinder
+          CKFinder,
         ],
 
         toolbar: {
@@ -242,27 +258,27 @@ export default {
             "numberedList",
             "|",
             "undo",
-            "redo"
-          ]
+            "redo",
+          ],
         },
         image: {
           toolbar: [
             "imageTextAlternative",
             "|",
             "imageStyle:full",
-            "imageStyle:side"
-          ]
+            "imageStyle:side",
+          ],
         },
         ckfinder: {
           uploadUrl: `https://scan.1966.org.tw/images/Upload/Pic`,
           // 後端的上傳圖片 API 路徑
           options: {
-            resourceType: "Images"
+            resourceType: "Images",
             // 限定類型為圖片
-          }
-        }
+          },
+        },
       },
-      editorDisabled: true
+      editorDisabled: true,
     };
   },
   computed: {
@@ -271,10 +287,10 @@ export default {
     },
     eventFilter() {
       const vm = this;
-      return vm.eventData.filter(event => {
+      return vm.eventData.filter((event) => {
         return vm.typeCheckBox.includes(event.EventTypeName);
       });
-    }
+    },
   },
   methods: {
     getEventData({ key, startDate, endDate }) {
@@ -282,15 +298,30 @@ export default {
       let params = {
         key,
         startDate,
-        endDate
+        endDate,
       };
-      vm.$api.GetEvents(params).then(res => {
-        let arr = res.data.response.map(event => {
+      vm.$api.GetEvents(params).then((res) => {
+        let arr = res.data.response.map((event) => {
           event.title = event.EventName;
+          // let du = moment(event.EventEndDate).diff(
+          //   moment(event.EventStartDate),
+          //   "days"
+          // );
+          // let du =
+          //   moment(event.EventEndDate).format("YYYY-MM-DD") ===
+          //   moment(event.EventStartDate).format("YYYY-MM-DD");
+          let a = moment(event.EventEndDate).format("YYYY-MM-DD");
+          let b = moment(event.EventStartDate).format("YYYY-MM-DD");
+          let c;
+          c = a === b ? true : false;
+
+          event.className = c ? "isNotAllday" : "";
           event.end = moment(event.EventEndDate).format("YYYY-MM-DDTHH:mm:ss");
           event.start = moment(event.EventStartDate).format(
             "YYYY-MM-DDTHH:mm:ss"
           );
+
+          console.log(event.title, a, b, c);
           return event;
         });
         vm.eventData = arr;
@@ -298,9 +329,9 @@ export default {
     },
     async getEventType() {
       const vm = this;
-      await vm.$api.GetEventType().then(res => {
+      await vm.$api.GetEventType().then((res) => {
         vm.eventTypeData = res.data;
-        vm.typeCheckBox = res.data.map(type => {
+        vm.typeCheckBox = res.data.map((type) => {
           return type.EventTypeName;
         });
       });
@@ -328,8 +359,8 @@ export default {
           confirmButtonColor: "#2f3e52",
           cancelButtonColor: "#522f2f",
           confirmButtonText: "確定",
-          cancelButtonText: "取消"
-        }).then(result => {
+          cancelButtonText: "取消",
+        }).then((result) => {
           if (result.value) {
             vm.$store.dispatch("loadingHandler", true);
             vm.startG = moment(vm.dialogEvent.EventStartDate).format();
@@ -340,7 +371,7 @@ export default {
             vm.$store.dispatch("loadingHandler", false);
             vm.$alertT.fire({
               icon: "info",
-              title: `已取消添加`
+              title: `已取消添加`,
             });
           }
         });
@@ -348,7 +379,7 @@ export default {
         //尚未登入執行authenticate
         vm.$alertT.fire({
           icon: "info",
-          title: "請先登入Google帳號"
+          title: "請先登入Google帳號",
         });
         vm.authenticate();
       }
@@ -361,13 +392,13 @@ export default {
         .getAuthInstance()
         .signIn({
           scope:
-            "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events"
+            "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events",
         })
         .then(
-          function() {
+          function () {
             vm.loadClient();
           },
-          function(err) {
+          function (err) {
             console.error("Error signing in", err);
             vm.$store.dispatch("loadingHandler", false);
           }
@@ -381,21 +412,21 @@ export default {
           resource: {
             end: { dateTime: vm.endG },
             start: { dateTime: vm.startG },
-            summary: vm.titleG
-          }
+            summary: vm.titleG,
+          },
         })
         .then(
-          function(response) {
+          function (response) {
             vm.$store.dispatch("loadingHandler", false);
             vm.$alertT.fire({
               icon: "success",
-              title: `已新增 ${vm.dialogEvent.EventName} 至Google行事曆`
+              title: `已新增 ${vm.dialogEvent.EventName} 至Google行事曆`,
             });
           },
-          function(err) {
+          function (err) {
             vm.$alertT.fire({
               icon: "error",
-              title: `發生錯誤`
+              title: `發生錯誤`,
             });
             vm.$store.dispatch("loadingHandler", false);
           }
@@ -410,17 +441,17 @@ export default {
           "https://content.googleapis.com/discovery/v1/apis/calendar/v3/rest"
         )
         .then(
-          function() {
+          function () {
             vm.$store.dispatch("loadingHandler", false);
             vm.$alertM.fire({
               icon: "success",
-              title: "已成功登入Google帳號"
+              title: "已成功登入Google帳號",
             });
             // console.log("GAPI client loaded for API");
             // console.log(gapi.client.hasOwnProperty("calendar"));
             vm.logInCheck();
           },
-          function(err) {
+          function (err) {
             console.error("Error loading GAPI client for API", err);
           }
         );
@@ -434,10 +465,10 @@ export default {
     },
     eventRender(info) {
       const vm = this;
-      info.el.addEventListener("click", function() {
+      info.el.addEventListener("click", function () {
         let Id = info.event.extendedProps.Id;
         let params = { Id };
-        vm.$api.GetEventById(params).then(res => {
+        vm.$api.GetEventById(params).then((res) => {
           vm.dialogEvent = res.data.response;
           console.log(vm.dialogEvent);
           vm.$nextTick(() => {
@@ -463,7 +494,7 @@ export default {
     typeName(eid) {
       const vm = this;
       return vm.eventTypeData
-        .map(event => {
+        .map((event) => {
           return event.Id === eid ? event.EventTypeName : "";
         })
         .join("");
@@ -473,14 +504,15 @@ export default {
     },
     getShowMenu(boolen) {
       this.showMenu = boolen;
-    }
+    },
   },
   async mounted() {
+    this.baseUrl = process.env.VUE_APP_BASE_URL;
     this.$store.dispatch("loadingHandler", true);
-    await gapi.load("client:auth2", function() {
+    await gapi.load("client:auth2", function () {
       gapi.auth2.init({
         client_id:
-          "1053736036780-t7p90l1lq51th52k6cdt22onksgrl4k7.apps.googleusercontent.com"
+          "1053736036780-t7p90l1lq51th52k6cdt22onksgrl4k7.apps.googleusercontent.com",
       });
       // console.log(gapi.client.hasOwnProperty("calendar"));
     });
@@ -491,7 +523,7 @@ export default {
     this.$store.dispatch("loadingHandler", false);
 
     // this.typeCheckBox = this.typeFilter;
-  }
+  },
 };
 </script>
 

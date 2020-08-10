@@ -278,6 +278,71 @@
   .fc-event,
   .fc-event-dot {
     background-color: $colorSecondary;
+    cursor: pointer;
+  }
+
+  .isNotAllday {
+    background-color: transparent;
+    border: 1px solid #fff !important;
+
+    &.fc-time-grid-event {
+      background-color: $colorSecondary !important;
+      border: 1px solid $colorSecondary !important;
+
+      .fc-time {
+        margin-left: 0rem;
+        font-weight: 700;
+        color: #fff;
+      }
+
+      .fc-title {
+        color: #fff;
+        margin-left: 0rem;
+      }
+
+      &::before {
+        content: "";
+        width: 0px;
+        height: 0px;
+      }
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 4.5px;
+      left: 4px;
+      width: 10px;
+      height: 10px;
+      background: $colorSecondary;
+      border-radius: 50%;
+      z-index: 999999;
+    }
+
+    .fc-time {
+      // order: -1;
+      margin-left: 1rem;
+      font-weight: 700;
+      color: #000;
+    }
+
+    .fc-title {
+      color: #000;
+    }
+
+    &.fc-not-start {
+      &::before {
+        content: "";
+        position: absolute;
+        top: 4.5px;
+        left: 4px;
+        width: 0px;
+        height: 0px;
+        background: $colorPrimary;
+        border-radius: 50%;
+        z-index: 999999;
+      }
+    }
   }
 
   .fc-event {
@@ -291,8 +356,13 @@
   }
 
   .fc-title {
-    order: -1;
-    margin-right: 0.5rem;
+    // order: -1;
+    margin-left: 0.5rem;
+    font-weight: 700;
+  }
+
+  .fc-day-grid-event .fc-time {
+    font-weight: 500;
   }
 
   .fc-time-grid-event .fc-content {

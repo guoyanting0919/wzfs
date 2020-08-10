@@ -9,7 +9,7 @@ const api = {
     return req("get", `Login/GetClientToken`, params);
   },
   GetInfoByToken(params) {
-    return req("get", "Login/GetInfoByToken", params);
+    return req("get", "Login/GetCalendarInfoByToken", params);
   },
   CheckTokenExpire(params) {
     return req("get", "Login/GetExpireByToken", params);

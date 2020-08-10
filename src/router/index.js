@@ -100,7 +100,7 @@ router.beforeEach((to, from, next) => {
       } else {
         store.commit("SAVE_TOKEN", "");
         store.commit("SAVE_TOKEN_EXPIRE", "");
-        window.localStorage.removeItem("user");
+        window.localStorage.removeItem("userf");
 
         Vue.prototype.$alertT.fire({
           icon: "info",
