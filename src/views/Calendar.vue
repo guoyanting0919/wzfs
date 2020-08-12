@@ -94,24 +94,29 @@
         </div>
         <div class="dialogBox">
           <p class="boxTitle">活動連結</p>
-          <p class="noInfo" v-if="!dialogEvent.LinkUrl">暫無連結</p>
+          <p class="noInfo" v-if="!dialogEvent.LinkUrl ||dialogEvent.LinkUrl==' '">暫無連結</p>
           <a class="eventLink" v-else target="_blank" :href="dialogEvent.LinkUrl">
             <i class="fas fa-link"></i>前往連結
           </a>
         </div>
-        <div class="dialogBox" v-if="dialogEvent.AttachDoc">
+        <div class="dialogBox" v-if="dialogEvent.AttachDoc ">
           <p class="boxTitle">附件下載</p>
-          <p class="noInfo" v-if="dialogEvent.AttachDoc.length===0">暫無附件</p>
-          <a
-            v-for="(url,index) in dialogEvent.AttachDoc"
-            :key="index"
-            target="_blank"
-            class="eventLink"
-            :href="`http://140.127.170.229/${url}`"
-          >
-            <i class="fas fa-file-download"></i>
-            附件下載
-          </a>
+          <p
+            class="noInfo"
+            v-if="dialogEvent.AttachDoc.length===0||dialogEvent.AttachDoc[0]==' '"
+          >暫無附件</p>
+          <template v-else>
+            <a
+              v-for="(url,index) in dialogEvent.AttachDoc"
+              :key="index"
+              target="_blank"
+              class="eventLink"
+              :href="`http://140.127.170.229/${url}`"
+            >
+              <i class="fas fa-file-download"></i>
+              附件下載
+            </a>
+          </template>
         </div>
         <div class="joinUserBox" v-if="dialogEvent.JoinUsers">
           <p class="boxTitle">參與人員</p>
@@ -124,7 +129,7 @@
             <el-table-column property="userName" label="姓名"></el-table-column>
             <el-table-column property="usertitle" label="職稱"></el-table-column>
             <el-table-column property="unit" label="單位"></el-table-column>
-            <el-table-column property="userType" label="角色"></el-table-column>
+            <el-table-column property="userType" label="參與角色"></el-table-column>
           </el-table>
         </div>
       </div>
