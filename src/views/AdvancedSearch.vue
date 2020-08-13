@@ -152,7 +152,7 @@
             :key="index"
             target="_blank"
             class="eventLink"
-            :href="`http://140.127.170.229/${url}`"
+            :href="`http://cal-rd.wzu.edu.tw/${url}`"
           >
             <i class="fas fa-file-download"></i>
             附件下載
@@ -432,7 +432,7 @@ export default {
           },
           function (err) {
             console.error("Error signing in", err);
-            vm.$store.dispatch("loadingHandler", true);
+            vm.$store.dispatch("loadingHandler", false);
           }
         );
     },
@@ -467,7 +467,7 @@ export default {
     loadClient() {
       // 設定api key 並登入
       const vm = this;
-      gapi.client.setApiKey("AIzaSyApyW42vDYl7TrGihL1wYqBARlRHVS__A8");
+      gapi.client.setApiKey(process.env.VUE_APP_API_KEY);
       return gapi.client
         .load(
           "https://content.googleapis.com/discovery/v1/apis/calendar/v3/rest"
@@ -520,8 +520,7 @@ export default {
     this.baseUrl = process.env.VUE_APP_BASE_URL;
     gapi.load("client:auth2", function () {
       gapi.auth2.init({
-        client_id:
-          "1053736036780-t7p90l1lq51th52k6cdt22onksgrl4k7.apps.googleusercontent.com",
+        client_id: process.env.VUE_APP_BASE_URL,
       });
       // console.log(gapi.client.hasOwnProperty("calendar"));
     });
