@@ -9,56 +9,56 @@ export default {
   props: {
     identifyCode: {
       type: String,
-      default: "1234"
+      default: "1234",
     },
     fontSizeMin: {
       type: Number,
-      default: 24
+      default: 32,
     },
     fontSizeMax: {
       type: Number,
-      default: 40
+      default: 40,
     },
     backgroundColorMin: {
       type: Number,
-      default: 180
+      default: 180,
     },
     backgroundColorMax: {
       type: Number,
-      default: 240
+      default: 240,
     },
     colorMin: {
       type: Number,
-      default: 50
+      default: 50,
     },
     colorMax: {
       type: Number,
-      default: 160
+      default: 160,
     },
     lineColorMin: {
       type: Number,
-      default: 40
+      default: 40,
     },
     lineColorMax: {
       type: Number,
-      default: 180
+      default: 180,
     },
     dotColorMin: {
       type: Number,
-      default: 0
+      default: 0,
     },
     dotColorMax: {
       type: Number,
-      default: 255
+      default: 255,
     },
     contentWidth: {
       type: Number,
-      default: 112
+      default: 112,
     },
     contentHeight: {
       type: Number,
-      default: 38
-    }
+      default: 38,
+    },
   },
   methods: {
     // 生成一個隨機數
@@ -95,7 +95,7 @@ export default {
         this.randomNum(this.fontSizeMin, this.fontSizeMax) + "px SimHei";
       let x = (i + 1) * (this.contentWidth / (this.identifyCode.length + 1));
       let y = this.randomNum(this.fontSizeMax, this.contentHeight - 5);
-      let deg = this.randomNum(-45, 45);
+      let deg = this.randomNum(-25, 25);
       // 修改座標原點和旋轉角度
       ctx.translate(x, y);
       ctx.rotate((deg * Math.PI) / 180);
@@ -106,7 +106,7 @@ export default {
     },
     drawLine(ctx) {
       // 繪製干擾線
-      for (let i = 0; i < 5; i++) {
+      for (let i = 0; i < 3; i++) {
         ctx.strokeStyle = this.randomColor(
           this.lineColorMin,
           this.lineColorMax
@@ -125,7 +125,7 @@ export default {
     },
     drawDot(ctx) {
       // 繪製干擾點
-      for (let i = 0; i < 50; i++) {
+      for (let i = 0; i < 20; i++) {
         ctx.fillStyle = this.randomColor(0, 255);
         ctx.beginPath();
         ctx.arc(
@@ -137,16 +137,16 @@ export default {
         );
         ctx.fill();
       }
-    }
+    },
   },
   watch: {
     identifyCode() {
       this.drawPic();
-    }
+    },
   },
   mounted() {
     this.drawPic();
-  }
+  },
 };
 </script>
 
