@@ -39,6 +39,7 @@
         </div>
         <input type="text" v-model="code" placeholder="請輸入驗證碼" />
       </div>
+      <span class="changeCode">點擊圖片更新驗證碼</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="info" @click="loginDialog = false">取 消</el-button>
         <el-button type="primary" @click="loginHandler">登 入</el-button>

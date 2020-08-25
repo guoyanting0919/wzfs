@@ -152,7 +152,7 @@
             :key="index"
             target="_blank"
             class="eventLink"
-            :href="`http://cal-rd.wzu.edu.tw/${url}`"
+            :href="`http://cal.wzu.edu.tw/${url}`"
           >
             <i class="fas fa-file-download"></i>
             附件下載
