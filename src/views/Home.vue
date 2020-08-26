@@ -17,7 +17,7 @@ export default {
   methods: {},
   created() {},
   mounted() {
-    console.log(process.env.VUE_APP_API);
-  }
+    // console.log(process.env.VUE_APP_API);
+  },
 };
 </script>

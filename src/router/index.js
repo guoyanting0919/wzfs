@@ -78,9 +78,9 @@ router.beforeEach((to, from, next) => {
           .then((res) => {
             let flag = res.data.response;
             if (flag) {
-              console.log("token OOOO");
+              // console.log("token OOOO");
             } else {
-              console.log("token XXXXX");
+              // console.log("token XXXXX");
               toCalendar();
             }
           });

@@ -341,7 +341,7 @@ export default {
       };
       vm.$api.GetEventById(params).then((res) => {
         vm.dialogEvent = res.data.response;
-        console.log(vm.dialogEvent);
+        // console.log(vm.dialogEvent);
         vm.$nextTick(() => {
           vm.eventDailog = true;
         });
@@ -492,7 +492,7 @@ export default {
       //檢查是否為登入狀態
       let check = gapi.hasOwnProperty("client");
       let check2 = gapi.client.hasOwnProperty("calendar");
-      console.log(check2);
+      // console.log(check2);
       check2 ? (this.isLogInG = true) : (this.isLogInG = false);
     },
     dateFilter(date) {

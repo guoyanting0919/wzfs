@@ -58,8 +58,8 @@ export default {
   data() {
     return {
       loginDialog: false,
-      account: "99968",
-      password: "test1234",
+      account: "",
+      password: "",
       showMenu: false,
 
       // 數字驗證

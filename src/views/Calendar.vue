@@ -120,9 +120,11 @@
         </div>
         <div class="joinUserBox" v-if="dialogEvent.JoinUsers">
           <p class="boxTitle">參與人員</p>
+          <p v-if="!isLogin" class="noInfo noJoinUser">登入後查看</p>
           <el-table
+            v-else
             header-cell-class-name="tableHeader"
-            empty-text="登入後查看"
+            empty-text="暫無資料"
             :data="dialogEvent.JoinUsers"
             style="margin-top:1rem"
           >
@@ -326,7 +328,7 @@ export default {
             "YYYY-MM-DDTHH:mm:ss"
           );
 
-          console.log(event.title, a, b, c);
+          // console.log(event.title, a, b, c);
           return event;
         });
         vm.eventData = arr;
@@ -342,7 +344,7 @@ export default {
       });
     },
     searchHandler() {
-      console.log("search");
+      // console.log("search");
       const vm = this;
       let startDate = vm.startDate;
       let endDate = vm.endDate;
@@ -465,7 +467,7 @@ export default {
       //檢查是否為登入狀態
       let check = gapi.hasOwnProperty("client");
       let check2 = gapi.client.hasOwnProperty("calendar");
-      console.log(check2);
+      // console.log(check2);
       check2 ? (this.isLogInG = true) : (this.isLogInG = false);
     },
     eventRender(info) {
@@ -475,7 +477,7 @@ export default {
         let params = { Id };
         vm.$api.GetEventById(params).then((res) => {
           vm.dialogEvent = res.data.response;
-          console.log(vm.dialogEvent);
+          // console.log(vm.dialogEvent);
           vm.$nextTick(() => {
             vm.eventDailog = true;
           });
