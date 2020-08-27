@@ -71,3 +71,24 @@ input {
 javascript .el-table__body {
   width: 100%;
 }
+
+.ql-toolbar {
+  pointer-events: none;
+  opacity: 0;
+  height: 0;
+  padding-top: 15px !important;
+}
+
+.ql-container {
+  border-top: 1px solid #ccc !important;
+  pointer-events: none;
+}
+
+.quillWrapper {
+  width: 100%;
+}
+
+.el-icon-circle-close {
+  color: #eb0600 !important;
+  text-shadow: 0 0 1px #eb0600;
+}

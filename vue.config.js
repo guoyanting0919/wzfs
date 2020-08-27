@@ -7,7 +7,7 @@ module.exports = {
   // The source of CKEditor is encapsulated in ES6 modules. By default, the code
   // from the node_modules directory is not transpiled, so you must explicitly tell
   // the CLI tools to transpile JavaScript files in all ckeditor5-* modules.
-  transpileDependencies: [/ckeditor5-[^/\\]+[/\\]src[/\\].+\.js$/],
+  transpileDependencies: ["*"],
 
   configureWebpack: {
     plugins: [
@@ -22,6 +22,14 @@ module.exports = {
   //	1. The icons used by CKEditor must be loaded using raw-loader,
   //	2. The CSS used by CKEditor must be transpiled using PostCSS to load properly.
   chainWebpack: (config) => {
+    const entry = config.entry("app");
+    // 其他配置
+    // config
+    //   .entry("./src/main.js")
+    //   .add("./node_modules/babel-polyfill/dist/polyfill.js"); // main是入口js文件
+    entry
+      .add("babel-polyfill") //一定要在首行引入，否则IE浏览器还是会报错
+      .end();
     // (1.) To handle editor icons, get the default rule for *.svg files first:
     const svgRule = config.module.rule("svg");
 

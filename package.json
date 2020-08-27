@@ -33,6 +33,7 @@
     "@fullcalendar/timegrid": "^4.4.0",
     "@fullcalendar/vue": "^4.4.0",
     "axios": "^0.19.2",
+    "babel-polyfill": "^6.26.0",
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
     "moment": "^2.26.0",
@@ -42,7 +43,10 @@
     "vue-google-oauth2": "^1.5.4",
     "vue-loading-overlay": "^3.3.2",
     "vue-router": "^3.2.0",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "quill-image-resize-module": "^3.0.0",
+    "quill-image-resize-vue": "^1.0.4",
+    "vue2-editor": "^2.10.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
