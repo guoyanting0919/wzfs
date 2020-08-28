@@ -64,9 +64,9 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
   // console.log(store);
   // 設定網頁 title
-  if (to.meta.title) {
-    document.title = `文藻行事曆-${to.meta.title}`;
-  }
+  // if (to.meta.title) {
+  //   document.title = `文藻行事曆-${to.meta.title}`;
+  // }
 
   // 檢查 token
   {
