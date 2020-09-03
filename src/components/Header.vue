@@ -3,10 +3,16 @@
     <div class="headerContainer">
       <i @click="setShowMenu" class="fas fa-bars"></i>
       <img @click="$router.push('/Calendar')" src="../assets/images/wzlogo.png" alt />
+
       <div class="btnBox">
         <i :class="{'loginIcon':userName}" class="fas fa-user"></i>
         <p v-if="!userName" class="loginBox" @click="loginDialog=true">登入帳號</p>
         <p v-if="userName" class="userName">{{userName}}</p>
+        <a
+          href="http://cal.wzu.edu.tw/wzbsDev/index.html#/Login"
+          v-if="userName"
+          class="logoutBox"
+        >後台系統</a>
         <p @click="logoutHandler" class="logoutBox" v-if="userName">登出</p>
       </div>
     </div>

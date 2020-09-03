@@ -192,6 +192,8 @@ export default {
     return {
       // baseUrl
       baseUrl: "",
+      // 是否僅顯示活動
+      onlyActivity: false,
       //globle data
       eventTypeData: "",
       eventData: "",
@@ -341,9 +343,13 @@ export default {
       const vm = this;
       await vm.$api.GetEventType().then((res) => {
         vm.eventTypeData = res.data;
-        vm.typeCheckBox = res.data.map((type) => {
-          return type.EventTypeName;
-        });
+        if (!vm.onlyActivity) {
+          vm.typeCheckBox = res.data.map((type) => {
+            return type.EventTypeName;
+          });
+        } else {
+          vm.typeCheckBox = ["活動"];
+        }
       });
     },
     searchHandler() {
@@ -517,6 +523,9 @@ export default {
     },
   },
   async mounted() {
+    if (this.$route.params && this.$route.params.type) {
+      this.onlyActivity = true;
+    }
     this.baseUrl = process.env.VUE_APP_BASE_URL;
     this.$store.dispatch("loadingHandler", true);
     await gapi.load("client:auth2", function () {
