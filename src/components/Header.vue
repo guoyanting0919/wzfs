@@ -8,12 +8,15 @@
         <i :class="{'loginIcon':userName}" class="fas fa-user"></i>
         <p v-if="!userName" class="loginBox" @click="loginDialog=true">登入帳號</p>
         <p v-if="userName" class="userName">{{userName}}</p>
-        <a
-          href="http://cal.wzu.edu.tw/wzbsDev/index.html#/Login"
-          v-if="userName"
-          class="logoutBox"
-        >後台系統</a>
-        <p @click="logoutHandler" class="logoutBox" v-if="userName">登出</p>
+
+        <p @click="logoutHandler" class="logoutBox" v-if="userName">
+          登出
+          <a
+            href="http://cal.wzu.edu.tw/wzbsDev/index.html#/Login"
+            v-if="userName"
+            class="logoutBox bsBtn"
+          >後台系統</a>
+        </p>
       </div>
     </div>
 
@@ -102,19 +105,32 @@ export default {
             account: vm.account,
             password: vm.password,
           };
-          vm.$api.GetToken(params).then((res) => {
-            let token = res.data.token;
-            vm.$store.commit("SAVE_TOKEN", token);
-            let curTime = new Date();
-            let expiredate = new Date(
-              curTime.setSeconds(curTime.getSeconds() + res.data.expires_in)
-            );
-            vm.$store.commit("SAVE_TOKEN_EXPIRE", expiredate);
+          vm.$api
+            .GetToken(params)
+            .then((res) => {
+              if (res.data.success) {
+                let token = res.data.token;
+                vm.$store.commit("SAVE_TOKEN", token);
+                let curTime = new Date();
+                let expiredate = new Date(
+                  curTime.setSeconds(curTime.getSeconds() + res.data.expires_in)
+                );
+                vm.$store.commit("SAVE_TOKEN_EXPIRE", expiredate);
 
-            window.localStorage.refreshtime = expiredate;
-            window.localStorage.expires_in = res.data.expires_in;
-            vm.getInfoByToken(token);
-          });
+                window.localStorage.refreshtime = expiredate;
+                window.localStorage.expires_in = res.data.expires_in;
+                vm.getInfoByToken(token);
+              } else {
+                // console.log(res);
+                vm.$alertM.fire({
+                  icon: "error",
+                  title: res.data.message,
+                });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         }
       }
     },

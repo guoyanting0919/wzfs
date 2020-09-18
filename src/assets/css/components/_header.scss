@@ -65,20 +65,20 @@
     i {
       font-size: 24px;
       transition: 0.3s;
-      color: lighten($color: $colorPrimary, $amount: 50);
+      color: lighten($color: $colorPrimary, $amount: 10);
 
       &.loginIcon {
-        color: lighten($color: $colorPrimary, $amount: 20);
+        // color: lighten($color: $colorPrimary, $amount: 20);
       }
     }
 
     &:hover {
       i {
-        color: lighten($color: $colorPrimary, $amount: 20);
+        // color: lighten($color: $colorPrimary, $amount: 20);
       }
 
       i.loginIcon {
-        color: lighten($color: $colorPrimary, $amount: 50);
+        // color: lighten($color: $colorPrimary, $amount: 50);
       }
     }
   }
@@ -93,6 +93,10 @@
     font-size: 14px;
     color: $colorPrimary;
     cursor: pointer;
+
+    &:hover {
+      // background: #cccccc;
+    }
   }
 
   .userName {
@@ -119,5 +123,10 @@
   .changeCode {
     font-size: 13px;
     color: red;
+  }
+
+  .bsBtn:hover {
+    background: #cccccc;
+    // padding: 2px;
   }
 }

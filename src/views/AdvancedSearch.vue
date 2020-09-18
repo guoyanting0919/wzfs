@@ -3,7 +3,7 @@
     <Header @getShowMenu="getShowMenu"></Header>
 
     <!-- fillterBox -->
-    <div class="filterBox" :class="{'showMenu':showMenu}">
+    <div class="filterBox" :class="{ showMenu: showMenu }">
       <el-input
         @keyup.native.enter="searchHandler"
         class="keywordInput"
@@ -38,59 +38,94 @@
         end-placeholder="结束日期"
       ></el-date-picker>
 
-      <el-button class="searchBtn" :loading="searchLoading" @click="searchHandler" type="primary">搜尋</el-button>
+      <el-button
+        class="searchBtn"
+        :loading="searchLoading"
+        @click="searchHandler"
+        type="primary"
+        >搜尋</el-button
+      >
+      <el-button class="searchBtn" @click="handleExport" type="primary"
+        >匯出</el-button
+      >
     </div>
 
     <!-- mainTable -->
     <el-table
       header-cell-class-name="tableHeader"
-      :default-sort="{prop: 'date', order: 'descending'}"
+      :default-sort="{ prop: 'date', order: 'descending' }"
       v-if="eventsData"
       :data="eventsData"
-      style="height: 650px;margin-top: 3rem;"
+      style="height: auto;margin-top: 3rem;"
       border
       empty-text="暫無資料"
       class="mainTable"
     >
       <el-table-column prop="UnitCode" label="單位" width="250">
         <template slot-scope="scope">
-          <span v-if="unitsData">{{unitNameFilter(scope.row.UnitCode)}}</span>
+          <span v-if="unitsData">{{ unitNameFilter(scope.row.UnitCode) }}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="EventName" label="活動 / 會議名稱" width="250"></el-table-column>
+      <el-table-column
+        prop="EventName"
+        label="活動 / 會議名稱"
+        width="250"
+      ></el-table-column>
       <el-table-column prop="JoinUsers" label="參與人員">
         <template slot-scope="scope">
-          <el-tooltip class="item" effect="dark" :open-delay="500" placement="top-start">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            :open-delay="500"
+            placement="top-start"
+          >
             <div slot="content">
               <span
                 class="userSpan"
-                v-for="(user,index) in scope.row.JoinUsers"
+                v-for="(user, index) in scope.row.JoinUsers"
                 :key="user.Id"
-              >{{index+1}}.{{user.userName }}</span>
+                >{{ index + 1 }}.{{ user.userName }}</span
+              >
             </div>
             <p class="textOverflow">
               <span
                 class="userSpan"
                 v-for="user in scope.row.JoinUsers"
                 :key="user.Id"
-              >{{user.userName}}</span>
+                >{{ user.userName }}</span
+              >
             </p>
           </el-tooltip>
         </template>
       </el-table-column>
-      <el-table-column sortable prop="EventStartDate" label="開始時間" width="180">
+      <el-table-column
+        sortable
+        prop="EventStartDate"
+        label="開始時間"
+        width="180"
+      >
         <template slot-scope="scope">
-          <span>{{dateFilter(scope.row.EventStartDate)}}</span>
+          <span>{{ dateFilter(scope.row.EventStartDate) }}</span>
         </template>
       </el-table-column>
-      <el-table-column sortable prop="EventEndDate" label="結束時間" width="180">
+      <el-table-column
+        sortable
+        prop="EventEndDate"
+        label="結束時間"
+        width="180"
+      >
         <template slot-scope="scope">
-          <span>{{dateFilter(scope.row.EventEndDate)}}</span>
+          <span>{{ dateFilter(scope.row.EventEndDate) }}</span>
         </template>
       </el-table-column>
       <el-table-column prop="EventName" label="操作" width="100">
         <template slot-scope="scope">
-          <el-button @click="getEventById(scope.row.Id)" size="mini" type="primary">詳細</el-button>
+          <el-button
+            @click="getEventById(scope.row.Id)"
+            size="mini"
+            type="primary"
+            >詳細</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -112,19 +147,21 @@
     <!-- eventDailog -->
     <el-dialog custom-class="eventDailog" :visible.sync="eventDailog">
       <div slot="title" class="header-title">
-        <span class="eventTitle">{{dialogEvent.EventName}}</span>
-        <span v-if="eventTypeData" class="typeName">{{typeName(dialogEvent.EventTypeId)}}</span>
-        <span class="eventUnitCode">{{dialogEvent.UnitCode}}</span>
+        <span class="eventTitle">{{ dialogEvent.EventName }}</span>
+        <span v-if="eventTypeData" class="typeName">{{
+          typeName(dialogEvent.EventTypeId)
+        }}</span>
+        <span class="eventUnitCode">{{ dialogEvent.UnitCode }}</span>
         <el-divider></el-divider>
       </div>
       <div class="dialogMain">
         <div class="dialogBox">
           <p class="boxTitle">開始時間</p>
-          <p>{{dateFilter(dialogEvent.EventStartDate)}}</p>
+          <p>{{ dateFilter(dialogEvent.EventStartDate) }}</p>
         </div>
         <div class="dialogBox">
           <p class="boxTitle">結束時間</p>
-          <p>{{dateFilter(dialogEvent.EventEndDate)}}</p>
+          <p>{{ dateFilter(dialogEvent.EventEndDate) }}</p>
         </div>
         <div class="dialogBox" style="flex-wrap: wrap;">
           <p class="boxTitle">活動描述</p>
@@ -140,8 +177,18 @@
         </div>
         <div class="dialogBox">
           <p class="boxTitle">活動連結</p>
-          <p class="noInfo" v-if="!dialogEvent.LinkUrl || dialogEvent.LinkUrl==' '">暫無連結</p>
-          <a class="eventLink" v-else target="_blank" :href="dialogEvent.LinkUrl">
+          <p
+            class="noInfo"
+            v-if="!dialogEvent.LinkUrl || dialogEvent.LinkUrl == ' '"
+          >
+            暫無連結
+          </p>
+          <a
+            class="eventLink"
+            v-else
+            target="_blank"
+            :href="dialogEvent.LinkUrl"
+          >
             <i class="fas fa-link"></i>前往連結
           </a>
         </div>
@@ -149,11 +196,16 @@
           <p class="boxTitle">附件下載</p>
           <p
             class="noInfo"
-            v-if="dialogEvent.AttachDoc.length===0||dialogEvent.AttachDoc[0]==' '"
-          >暫無附件</p>
+            v-if="
+              dialogEvent.AttachDoc.length === 0 ||
+                dialogEvent.AttachDoc[0] == ' '
+            "
+          >
+            暫無附件
+          </p>
           <template v-else>
             <a
-              v-for="(url,index) in dialogEvent.AttachDoc"
+              v-for="(url, index) in dialogEvent.AttachDoc"
               :key="index"
               target="_blank"
               class="eventLink"
@@ -173,14 +225,22 @@
             style="margin-top:1rem"
           >
             <el-table-column property="userName" label="姓名"></el-table-column>
-            <el-table-column property="usertitle" label="職稱"></el-table-column>
+            <el-table-column
+              property="usertitle"
+              label="職稱"
+            ></el-table-column>
             <el-table-column property="unit" label="單位"></el-table-column>
           </el-table>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="info" @click="eventDailog = false">取 消</el-button>
-        <el-button class="addToGoogleBtn" type="primary" @click="addToGoogleCalendar">新增到GOOGLE行事曆</el-button>
+        <el-button
+          class="addToGoogleBtn"
+          type="primary"
+          @click="addToGoogleCalendar"
+          >新增到GOOGLE行事曆</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -191,6 +251,7 @@ import Header from "../components/Header";
 import moment from "moment";
 import interactionPlugin from "@fullcalendar/interaction";
 import { VueEditor } from "vue2-editor";
+import axios from "axios";
 
 export default {
   name: "AdvancedSearch",
@@ -230,6 +291,68 @@ export default {
     setCurrentPage() {},
   },
   methods: {
+    handleExport() {
+      const vm = this;
+      vm.$swal({
+        title: "匯出提示",
+        html: `*匯出內容將與搜尋結果相同*</p>`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#2f3e52",
+        cancelButtonColor: "#522f2f",
+        confirmButtonText: "確定匯出",
+        cancelButtonText: "取消",
+      }).then((result) => {
+        if (result.value) {
+          let key = vm.keywordInput;
+          let unitCode = vm.unitSelect;
+          let startDate = vm.dateSelect[0]
+            ? moment(vm.dateSelect[0]).format("YYYY-MM-DD")
+            : "";
+          let endDate = vm.dateSelect[1]
+            ? moment(vm.dateSelect[1]).format("YYYY-MM-DD")
+            : "";
+          let date = moment(new Date()).format("YYYYMMDDHHMM");
+          let config = {
+            headers: {
+              "Content-Type": "application/json",
+              // Authorization: `Bearer ${vm.$store.state.token}`,
+            },
+            responseType: "blob", //// 回應類型為 blob
+          };
+          vm.$http
+            .get(
+              `${vm.baseUrl}CalendarEvent/GetCalendarExcelClient?key=${key}&unitCode=${unitCode}&startDate=${startDate}&endDate=${endDate}`,
+              config
+            )
+            .then((res) => {
+              // console.log(res);
+              let blob = new Blob([res.data], {
+                type: "application/" + res.headers["content-type"],
+              });
+              let downloadElement = document.createElement("a");
+              let href = window.URL.createObjectURL(blob); // 創建下載的鏈接
+              downloadElement.href = href;
+              downloadElement.download = `行事曆事件_${date}.xlsx`; // 下載後文件名
+              // 此寫法兼容可火狐瀏覽器
+              document.body.appendChild(downloadElement);
+              downloadElement.click(); // 點擊下載
+              document.body.removeChild(downloadElement); // 下載完成移除元素
+              window.URL.revokeObjectURL(href); // 釋放掉 blob 對象
+              vm.$alertM.fire({
+                icon: "success",
+                title: `匯出成功`,
+              });
+              vm.exportDialogVisible = false;
+            });
+        } else {
+          vm.$alertT.fire({
+            icon: "info",
+            title: `已取消匯出`,
+          });
+        }
+      });
+    },
     async getUnits() {
       const vm = this;
       await vm.$api.GetUnits().then((res) => {
@@ -349,10 +472,10 @@ export default {
             "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events",
         })
         .then(
-          function () {
+          function() {
             vm.loadClient();
           },
-          function (err) {
+          function(err) {
             console.error("Error signing in", err);
             vm.$store.dispatch("loadingHandler", false);
           }
@@ -370,14 +493,14 @@ export default {
           },
         })
         .then(
-          function (response) {
+          function(response) {
             vm.$store.dispatch("loadingHandler", false);
             vm.$alertT.fire({
               icon: "success",
               title: `已新增 ${vm.dialogEvent.EventName} 至Google行事曆`,
             });
           },
-          function (err) {
+          function(err) {
             vm.$alertT.fire({
               icon: "error",
               title: `發生錯誤`,
@@ -395,7 +518,7 @@ export default {
           "https://content.googleapis.com/discovery/v1/apis/calendar/v3/rest"
         )
         .then(
-          function () {
+          function() {
             vm.$store.dispatch("loadingHandler", false);
             vm.$alertM.fire({
               icon: "success",
@@ -405,7 +528,7 @@ export default {
             // console.log(gapi.client.hasOwnProperty("calendar"));
             vm.logInCheck();
           },
-          function (err) {
+          function(err) {
             console.error("Error loading GAPI client for API", err);
           }
         );
@@ -440,7 +563,7 @@ export default {
   },
   async mounted() {
     this.baseUrl = process.env.VUE_APP_BASE_URL;
-    gapi.load("client:auth2", function () {
+    gapi.load("client:auth2", function() {
       gapi.auth2.init({
         client_id: process.env.VUE_APP_BASE_URL,
       });
@@ -454,5 +577,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
