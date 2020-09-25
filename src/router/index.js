@@ -15,7 +15,7 @@ const routes = [
   {
     path: "/Calendar", //開頭大寫
     name: "Calendar", //開頭大寫
-    component: () => import("../views/Calendar.vue"),
+    component: () => import("../views/Calendar2.vue"),
     meta: {
       title: "行事曆", //中文為主 若為英文開頭大寫
       requireAuth: false, //表示是否登入驗證 false 時可省略
@@ -27,7 +27,7 @@ const routes = [
   {
     path: "/Calendar/:type", //開頭大寫
     name: "CalendarAct", //開頭大寫
-    component: () => import("../views/Calendar.vue"),
+    component: () => import("../views/Calendar2.vue"),
     meta: {
       title: "行事曆-活動", //中文為主 若為英文開頭大寫
       requireAuth: false, //表示是否登入驗證 false 時可省略

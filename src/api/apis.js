@@ -25,7 +25,7 @@ const api = {
     return req("get", "Client/GetEventList", params);
   },
   GetEventsPage(params) {
-    return req("get", "CalendarEvent/Get", params);
+    return req("get", "CalendarEvent/GetClient", params);
   },
   GetEventById(params) {
     return req("get", "Client/GetEventById/Id", params);
