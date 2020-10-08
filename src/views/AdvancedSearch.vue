@@ -56,7 +56,7 @@
       :default-sort="{ prop: 'date', order: 'descending' }"
       v-if="eventsData"
       :data="eventsData"
-      style="height: auto;margin-top: 3rem;"
+      style="height: auto; margin-top: 3rem"
       border
       empty-text="暫無資料"
       class="mainTable"
@@ -163,7 +163,7 @@
           <p class="boxTitle">結束時間</p>
           <p>{{ dateFilter(dialogEvent.EventEndDate) }}</p>
         </div>
-        <div class="dialogBox" style="flex-wrap: wrap;">
+        <div class="dialogBox" style="flex-wrap: wrap">
           <p class="boxTitle">活動描述</p>
           <!-- <div class="personalContainer mt-5 ck" ref="ck">
             <ckeditor
@@ -198,7 +198,7 @@
             class="noInfo"
             v-if="
               dialogEvent.AttachDoc.length === 0 ||
-                dialogEvent.AttachDoc[0] == ' '
+              dialogEvent.AttachDoc[0] == ' '
             "
           >
             暫無附件
@@ -209,7 +209,7 @@
               :key="index"
               target="_blank"
               class="eventLink"
-              :href="`http://cal.wzu.edu.tw/${url}`"
+              :href="`https://cal.wzu.edu.tw/${url}`"
             >
               <i class="fas fa-file-download"></i>
               附件下載
@@ -222,7 +222,7 @@
             header-cell-class-name="tableHeader"
             empty-text="暫無資料"
             :data="dialogEvent.JoinUsers"
-            style="margin-top:1rem"
+            style="margin-top: 1rem"
           >
             <el-table-column property="userName" label="姓名"></el-table-column>
             <el-table-column
@@ -472,10 +472,10 @@ export default {
             "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events",
         })
         .then(
-          function() {
+          function () {
             vm.loadClient();
           },
-          function(err) {
+          function (err) {
             console.error("Error signing in", err);
             vm.$store.dispatch("loadingHandler", false);
           }
@@ -493,14 +493,14 @@ export default {
           },
         })
         .then(
-          function(response) {
+          function (response) {
             vm.$store.dispatch("loadingHandler", false);
             vm.$alertT.fire({
               icon: "success",
               title: `已新增 ${vm.dialogEvent.EventName} 至Google行事曆`,
             });
           },
-          function(err) {
+          function (err) {
             vm.$alertT.fire({
               icon: "error",
               title: `發生錯誤`,
@@ -518,7 +518,7 @@ export default {
           "https://content.googleapis.com/discovery/v1/apis/calendar/v3/rest"
         )
         .then(
-          function() {
+          function () {
             vm.$store.dispatch("loadingHandler", false);
             vm.$alertM.fire({
               icon: "success",
@@ -528,7 +528,7 @@ export default {
             // console.log(gapi.client.hasOwnProperty("calendar"));
             vm.logInCheck();
           },
-          function(err) {
+          function (err) {
             console.error("Error loading GAPI client for API", err);
           }
         );
@@ -563,7 +563,7 @@ export default {
   },
   async mounted() {
     this.baseUrl = process.env.VUE_APP_BASE_URL;
-    gapi.load("client:auth2", function() {
+    gapi.load("client:auth2", function () {
       gapi.auth2.init({
         client_id: process.env.VUE_APP_BASE_URL,
       });

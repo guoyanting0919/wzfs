@@ -7,8 +7,8 @@ import store from "../store/index";
 export const toCalendar = () => {
   let timerInterval;
   store.dispatch("loadingHandler", false);
-  window.localStorage.removeItem("userf");
-  window.localStorage.removeItem("Tokenf");
+  window.localStorage.removeItem("user");
+  window.localStorage.removeItem("Token");
   window.localStorage.removeItem("TokenExpire");
   window.localStorage.removeItem("refreshtime");
   Vue.prototype.$swal({

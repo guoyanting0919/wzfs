@@ -27,15 +27,25 @@
         placeholder="請輸入關鍵字"
         v-model="searchInput"
       >
-        <i @click="searchHandler" slot="suffix" class="el-input__icon el-icon-search"></i>
+        <i
+          @click="searchHandler"
+          slot="suffix"
+          class="el-input__icon el-icon-search"
+        ></i>
       </el-input>
-      <el-button @click="exportDialogVisible = true" type="primary" class="adSearch">匯出Excel</el-button>
+      <el-button
+        @click="exportDialogVisible = true"
+        type="primary"
+        class="adSearch"
+        >匯出Excel</el-button
+      >
       <el-button
         @click="$router.push('/AdvancedSearch')"
         type="primary"
         class="adSearch"
         v-if="isLogin"
-      >進階搜尋</el-button>
+        >進階搜尋</el-button
+      >
     </div>
 
     <!-- calendar -->
@@ -68,7 +78,9 @@
     <el-dialog custom-class="eventDailog" :visible.sync="eventDailog">
       <div slot="title" class="header-title">
         <span class="eventTitle">{{ dialogEvent.EventName }}</span>
-        <span v-if="eventTypeData" class="typeName">{{ typeName(dialogEvent.EventTypeId) }}</span>
+        <span v-if="eventTypeData" class="typeName">{{
+          typeName(dialogEvent.EventTypeId)
+        }}</span>
         <span class="eventUnitCode">{{ dialogEvent.UnitCode }}</span>
         <el-divider></el-divider>
       </div>
@@ -85,7 +97,7 @@
           <p class="boxTitle">結束時間</p>
           <p>{{ dateFilter(dialogEvent.EventEndDate) }}</p>
         </div>
-        <div style="flex-wrap: wrap;" class="dialogBox">
+        <div style="flex-wrap: wrap" class="dialogBox">
           <p class="boxTitle">活動描述</p>
           <!-- <p class="summaryBox">{{dialogEvent.Summary}}</p> -->
           <!-- <div class="personalContainer mt-5 ck" ref="ck">
@@ -100,8 +112,18 @@
         </div>
         <div class="dialogBox">
           <p class="boxTitle">活動連結</p>
-          <p class="noInfo" v-if="!dialogEvent.LinkUrl || dialogEvent.LinkUrl == ' '">暫無連結</p>
-          <a class="eventLink" v-else target="_blank" :href="dialogEvent.LinkUrl">
+          <p
+            class="noInfo"
+            v-if="!dialogEvent.LinkUrl || dialogEvent.LinkUrl == ' '"
+          >
+            暫無連結
+          </p>
+          <a
+            class="eventLink"
+            v-else
+            target="_blank"
+            :href="dialogEvent.LinkUrl"
+          >
             <i class="fas fa-link"></i>前往連結
           </a>
         </div>
@@ -113,14 +135,16 @@
               dialogEvent.AttachDoc.length === 0 ||
                 dialogEvent.AttachDoc[0] == ' '
             "
-          >暫無附件</p>
+          >
+            暫無附件
+          </p>
           <template v-else>
             <a
               v-for="(url, index) in dialogEvent.AttachDoc"
               :key="index"
               target="_blank"
               class="eventLink"
-              :href="`http://cal.wzu.edu.tw/${url}`"
+              :href="`https://cal.wzu.edu.tw/${url}`"
             >
               <i class="fas fa-file-download"></i>
               附件下載
@@ -135,25 +159,38 @@
             header-cell-class-name="tableHeader"
             empty-text="暫無資料"
             :data="dialogEvent.JoinUsers"
-            style="margin-top:1rem"
+            style="margin-top: 1rem"
           >
             <el-table-column property="userName" label="姓名"></el-table-column>
-            <el-table-column property="usertitle" label="職稱"></el-table-column>
+            <el-table-column
+              property="usertitle"
+              label="職稱"
+            ></el-table-column>
             <el-table-column property="unit" label="單位"></el-table-column>
-            <el-table-column property="userType" label="參與角色"></el-table-column>
+            <el-table-column
+              property="userType"
+              label="參與角色"
+            ></el-table-column>
           </el-table>
         </div>
       </div>
       <span slot="footer" class="dialog-footer">
         <el-button type="info" @click="eventDailog = false">取 消</el-button>
-        <el-button type="primary" @click="addToGoogleCalendar">新增到GOOGLE行事曆</el-button>
+        <el-button type="primary" @click="addToGoogleCalendar"
+          >新增到GOOGLE行事曆</el-button
+        >
       </span>
     </el-dialog>
 
     <!-- exportDailog -->
     <el-dialog title="匯出提示" :visible.sync="exportDialogVisible" width="30%">
       <!-- <span>請選擇匯出類別</span> -->
-      <el-select clearable multiple v-model="exportType" placeholder="請選擇匯出類別">
+      <el-select
+        clearable
+        multiple
+        v-model="exportType"
+        placeholder="請選擇匯出類別"
+      >
         <el-option
           v-for="item in eventTypeData"
           :key="item.value"
@@ -231,7 +268,7 @@ export default {
   },
   computed: {
     isLogin() {
-      return window.localStorage.Tokenf ? true : false;
+      return window.localStorage.Token ? true : false;
     },
     eventFilter() {
       const vm = this;
@@ -394,10 +431,10 @@ export default {
             "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events",
         })
         .then(
-          function () {
+          function() {
             vm.loadClient();
           },
-          function (err) {
+          function(err) {
             console.error("Error signing in", err);
             vm.$store.dispatch("loadingHandler", false);
           }
@@ -415,14 +452,15 @@ export default {
           },
         })
         .then(
-          function (response) {
+          function(response) {
+            vm.eventDailog = false;
             vm.$store.dispatch("loadingHandler", false);
             vm.$alertT.fire({
               icon: "success",
               title: `已新增 ${vm.dialogEvent.EventName} 至Google行事曆`,
             });
           },
-          function (err) {
+          function(err) {
             vm.$alertT.fire({
               icon: "error",
               title: `發生錯誤`,
@@ -440,7 +478,7 @@ export default {
           "https://content.googleapis.com/discovery/v1/apis/calendar/v3/rest"
         )
         .then(
-          function () {
+          function() {
             vm.$store.dispatch("loadingHandler", false);
             vm.$alertM.fire({
               icon: "success",
@@ -450,7 +488,7 @@ export default {
             // console.log(gapi.client.hasOwnProperty("calendar"));
             vm.logInCheck();
           },
-          function (err) {
+          function(err) {
             console.error("Error loading GAPI client for API", err);
           }
         );
@@ -465,7 +503,7 @@ export default {
     eventRender(info) {
       const vm = this;
       // console.log(info);
-      info.el.addEventListener("click", function () {
+      info.el.addEventListener("click", function() {
         let Id = info.event.extendedProps.Id;
         let params = { Id };
         vm.$api.GetEventById(params).then((res) => {
@@ -512,7 +550,7 @@ export default {
     }
     this.baseUrl = process.env.VUE_APP_BASE_URL;
     this.$store.dispatch("loadingHandler", true);
-    await gapi.load("client:auth2", function () {
+    await gapi.load("client:auth2", function() {
       gapi.auth2.init({
         client_id: process.env.VUE_APP_CLIENT_ID,
       });

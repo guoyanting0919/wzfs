@@ -11,6 +11,9 @@ const api = {
   GetInfoByToken(params) {
     return req("get", "Login/GetCalendarInfoByToken", params);
   },
+  GetNavigationBar(params) {
+    return req("get", "Permission/GetNavigationBar", params);
+  },
   CheckTokenExpire(params) {
     return req("get", "Login/GetExpireByToken", params);
   },

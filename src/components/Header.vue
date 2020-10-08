@@ -2,20 +2,27 @@
   <div id="Header">
     <div class="headerContainer">
       <i @click="setShowMenu" class="fas fa-bars"></i>
-      <img @click="$router.push('/Calendar')" src="../assets/images/wzlogo.png" alt />
+      <img
+        @click="$router.push('/Calendar')"
+        src="../assets/images/wzlogo.png"
+        alt
+      />
 
       <div class="btnBox">
-        <i :class="{'loginIcon':userName}" class="fas fa-user"></i>
-        <p v-if="!userName" class="loginBox" @click="loginDialog=true">登入帳號</p>
-        <p v-if="userName" class="userName">{{userName}}</p>
+        <i :class="{ loginIcon: userName }" class="fas fa-user"></i>
+        <p v-if="!userName" class="loginBox" @click="loginDialog = true">
+          登入帳號
+        </p>
+        <p v-if="userName" class="userName">{{ userName }}</p>
 
         <p @click="logoutHandler" class="logoutBox" v-if="userName">
           登出
           <a
-            href="http://cal.wzu.edu.tw/wzbsDev/index.html#/Login"
+            href="https://cal.wzu.edu.tw/wzbsDev/index.html#/Login"
             v-if="userName"
             class="logoutBox bsBtn"
-          >後台系統</a>
+            >後台系統</a
+          >
         </p>
       </div>
     </div>
@@ -30,7 +37,12 @@
     >
       <label class="loginBox" for="account">
         <p>帳號</p>
-        <el-input id="account" class="loginInput" v-model="account" placeholder="請輸入帳號"></el-input>
+        <el-input
+          id="account"
+          class="loginInput"
+          v-model="account"
+          placeholder="請輸入帳號"
+        ></el-input>
       </label>
       <label class="loginBox" for="password">
         <p>密碼</p>
@@ -79,8 +91,8 @@ export default {
   },
   computed: {
     userName() {
-      if (window.localStorage.getItem("userf")) {
-        return JSON.parse(window.localStorage.getItem("userf")).RealName;
+      if (window.localStorage.getItem("user")) {
+        return JSON.parse(window.localStorage.getItem("user")).RealName;
       } else {
         return "";
       }
@@ -140,11 +152,12 @@ export default {
         token,
       };
       vm.$api.GetInfoByToken(params).then((res) => {
-        window.localStorage.userf = JSON.stringify(res.data.response);
+        window.localStorage.user = JSON.stringify(res.data.response);
         vm.loginDialog = false;
         window.location.reload();
       });
     },
+
     logoutHandler() {
       const vm = this;
       vm.$confirm(`確認登出?`, "提示", {
@@ -152,8 +165,8 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        window.localStorage.removeItem("userf");
-        window.localStorage.removeItem("Tokenf");
+        window.localStorage.removeItem("user");
+        window.localStorage.removeItem("Token");
         window.localStorage.removeItem("TokenExpire");
         window.localStorage.removeItem("refreshtime");
         window.localStorage.removeItem("router");
