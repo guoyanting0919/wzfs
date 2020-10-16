@@ -133,7 +133,7 @@
             class="noInfo"
             v-if="
               dialogEvent.AttachDoc.length === 0 ||
-                dialogEvent.AttachDoc[0] == ' '
+              dialogEvent.AttachDoc[0] == ' '
             "
           >
             暫無附件
@@ -431,10 +431,10 @@ export default {
             "https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/calendar.events",
         })
         .then(
-          function() {
+          function () {
             vm.loadClient();
           },
-          function(err) {
+          function (err) {
             console.error("Error signing in", err);
             vm.$store.dispatch("loadingHandler", false);
           }
@@ -452,15 +452,15 @@ export default {
           },
         })
         .then(
-          function(response) {
-            vm.eventDailog = false;
+          function (response) {
             vm.$store.dispatch("loadingHandler", false);
             vm.$alertT.fire({
               icon: "success",
               title: `已新增 ${vm.dialogEvent.EventName} 至Google行事曆`,
             });
+            vm.eventDailog = false;
           },
-          function(err) {
+          function (err) {
             vm.$alertT.fire({
               icon: "error",
               title: `發生錯誤`,
@@ -478,7 +478,7 @@ export default {
           "https://content.googleapis.com/discovery/v1/apis/calendar/v3/rest"
         )
         .then(
-          function() {
+          function () {
             vm.$store.dispatch("loadingHandler", false);
             vm.$alertM.fire({
               icon: "success",
@@ -488,7 +488,7 @@ export default {
             // console.log(gapi.client.hasOwnProperty("calendar"));
             vm.logInCheck();
           },
-          function(err) {
+          function (err) {
             console.error("Error loading GAPI client for API", err);
           }
         );
@@ -503,7 +503,7 @@ export default {
     eventRender(info) {
       const vm = this;
       // console.log(info);
-      info.el.addEventListener("click", function() {
+      info.el.addEventListener("click", function () {
         let Id = info.event.extendedProps.Id;
         let params = { Id };
         vm.$api.GetEventById(params).then((res) => {
@@ -550,7 +550,7 @@ export default {
     }
     this.baseUrl = process.env.VUE_APP_BASE_URL;
     this.$store.dispatch("loadingHandler", true);
-    await gapi.load("client:auth2", function() {
+    await gapi.load("client:auth2", function () {
       gapi.auth2.init({
         client_id: process.env.VUE_APP_CLIENT_ID,
       });
