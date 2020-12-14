@@ -162,10 +162,10 @@
             style="margin-top: 1rem"
           >
             <el-table-column property="userName" label="姓名"></el-table-column>
-            <el-table-column
+            <!-- <el-table-column
               property="usertitle"
               label="職稱"
-            ></el-table-column>
+            ></el-table-column> -->
             <el-table-column property="unit" label="單位"></el-table-column>
             <el-table-column
               property="userType"
