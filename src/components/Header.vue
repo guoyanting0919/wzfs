@@ -19,7 +19,7 @@
           登出
           <a
             href="https://cal.wzu.edu.tw/wzbsDev/index.html#/Login"
-            v-if="userName"
+            v-if="hasRole"
             class="logoutBox bsBtn"
             >後台系統</a
           >
@@ -95,6 +95,15 @@ export default {
         return JSON.parse(window.localStorage.getItem("user")).RealName;
       } else {
         return "";
+      }
+    },
+    hasRole() {
+      if (window.localStorage.getItem("user")) {
+        return (
+          JSON.parse(window.localStorage.getItem("user")).RoleNames[0] || false
+        );
+      } else {
+        return false;
       }
     },
   },
