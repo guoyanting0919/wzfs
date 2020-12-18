@@ -60,6 +60,7 @@
       border
       empty-text="暫無資料"
       class="mainTable"
+      @sort-change="hadleSortChange"
     >
       <el-table-column prop="UnitCode" label="單位" width="250">
         <template slot-scope="scope">
@@ -99,7 +100,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        sortable
+        sortable="custom"
         prop="EventStartDate"
         label="開始時間"
         width="180"
@@ -109,7 +110,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        sortable
+        sortable="custom"
         prop="EventEndDate"
         label="結束時間"
         width="180"
@@ -270,6 +271,7 @@ export default {
       dateSelect: "",
       searchLoading: false,
       showMenu: false,
+      strOrderByFileds: "Id descending",
       //   dialog
       dialogEvent: {},
       eventDailog: false,
@@ -291,6 +293,26 @@ export default {
     setCurrentPage() {},
   },
   methods: {
+    hadleSortChange({ column, prop, order }) {
+      console.log(column, prop, order);
+      const vm = this;
+      let fOrder;
+      order == null ? (fOrder = "ascending") : (fOrder = order);
+      vm.strOrderByFileds = `${prop} ${fOrder}`;
+      let page = vm.currentPage;
+      let key = vm.keywordInput;
+      let unitCode = vm.unitSelect;
+      let startDate;
+      let endDate;
+      if (vm.dateSelect !== null && vm.dateSelect) {
+        startDate = moment(vm.dateSelect[0]).format("YYYY-MM-DD");
+        endDate = moment(vm.dateSelect[1]).format("YYYY-MM-DD");
+      } else {
+        startDate = "";
+        endDate = "";
+      }
+      vm.getEvents({ page, key, startDate, endDate, unitCode });
+    },
     handleExport() {
       const vm = this;
       vm.$swal({
@@ -361,7 +383,14 @@ export default {
     },
     getEvents({ page, key, startDate, endDate, unitCode }) {
       const vm = this;
-      let params = { page, key, startDate, endDate, unitCode };
+      let params = {
+        page,
+        key,
+        startDate,
+        endDate,
+        unitCode,
+        strOrderByFileds: vm.strOrderByFileds,
+      };
       vm.$api.GetEventsPage(params).then((res) => {
         vm.pageSize = res.data.response.PageSize;
         vm.currentPage = res.data.response.page;
